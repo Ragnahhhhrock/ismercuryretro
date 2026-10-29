@@ -1,0 +1,12 @@
+{
+  "name": "Is Mercury retrograde?",
+  "short_name": "Mercury?",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#e9eeff",
+  "theme_color": "#1a1f6b",
+  "icons": [
+    { "src": "/assets/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "/assets/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" }
+  ]
+}

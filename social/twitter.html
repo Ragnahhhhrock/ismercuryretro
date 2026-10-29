@@ -1,0 +1,25 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<style>
+@font-face{font-family:"Bricolage Grotesque";src:url("../fonts/bricolage-grotesque.woff2");font-weight:200 800;font-stretch:75% 100%}
+@font-face{font-family:"Instrument Sans";src:url("../fonts/instrument-sans.woff2");font-weight:400 700;font-stretch:75% 100%}
+*{box-sizing:border-box;margin:0}
+body{width:1200px;height:600px;position:relative;overflow:hidden;font-family:"Instrument Sans",sans-serif}
+.layer{position:absolute;inset:0}
+.day{background:#e9eeff;color:#12154f}
+.night{background:#1a1f6b;color:#ffe3f2;clip-path:polygon(58% 0,100% 0,100% 100%,46% 100%)}
+.q{position:absolute;left:64px;top:52px;font:600 46px/1.1 "Bricolage Grotesque";font-stretch:100%;letter-spacing:-0.01em}
+.url{position:absolute;right:64px;top:62px;font:500 28px/1 "Instrument Sans";color:#ff5fa2}
+.ans{position:absolute;bottom:48px;font:800 380px/0.8 "Bricolage Grotesque";font-stretch:75%;letter-spacing:-0.03em}
+.no{left:56px}
+.yes{right:56px;color:#ff5fa2}
+svg.loop{position:absolute;left:0;bottom:0;width:1200px;height:600px}
+</style></head><body>
+<div class="layer day">
+  <div class="q">Is Mercury retrograde?</div>
+  <div class="ans no">NO</div>
+</div>
+<div class="layer night">
+  <div class="url">ismercuryretro.com</div>
+  <div class="ans yes">YES</div>
+</div>
+</body></html>

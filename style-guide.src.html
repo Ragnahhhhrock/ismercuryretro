@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en" data-state="direct">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Style guide · Is Mercury retrograde?</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="tokens.css">
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:400 var(--text-body)/var(--leading-body) var(--font-body);transition:background var(--dur-ui),color var(--dur-ui)}
+main{max-width:1040px;margin:0 auto;padding:var(--space-7) var(--gutter) var(--space-9)}
+h1,h2,h3{font-family:var(--font-display);line-height:var(--leading-heading);margin:0;letter-spacing:-0.01em}
+h1{font-size:var(--text-h1);font-weight:700}
+h2{font-size:var(--text-h2);font-weight:650;margin-top:var(--space-9)}
+h3{font-size:var(--text-h3);font-weight:600;margin-top:var(--space-6)}
+p{max-width:var(--measure);margin:var(--space-3) 0 0}
+a{color:var(--link)}
+:focus-visible{outline:var(--focus-ring) solid var(--accent);outline-offset:3px}
+.muted{color:var(--text-muted)}
+.toggle{display:inline-flex;border:var(--border-w) solid var(--text);border-radius:var(--radius-control);margin-top:var(--space-5)}
+.toggle button{font:600 var(--text-small) var(--font-body);background:none;color:var(--text);border:0;padding:var(--space-2) var(--space-4);cursor:pointer}
+.toggle button[aria-pressed="true"]{background:var(--text);color:var(--bg)}
+.hero{margin-top:var(--space-7);border-top:var(--border-w) solid var(--text);padding-top:var(--space-5)}
+.answer{font:800 var(--text-answer)/var(--leading-tight) var(--font-display);font-stretch:75%;letter-spacing:-0.03em;color:var(--accent);margin:0}
+.loop{width:100%;height:auto;display:block;margin-top:var(--space-5)}
+.loop path{stroke:var(--text);stroke-width:3;fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1;stroke-dashoffset:0}
+.loop.draw path{animation:draw var(--dur-draw) var(--ease-out) both}
+@keyframes draw{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
+.swatches{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:var(--space-4);margin-top:var(--space-5)}
+.sw{border:var(--border-w) solid var(--line);border-radius:var(--radius-control);overflow:hidden;font-size:var(--text-small)}
+.sw i{display:block;height:72px}
+.sw b{display:block;padding:var(--space-2) var(--space-3) 0}
+.sw span{display:block;padding:0 var(--space-3) var(--space-2);color:var(--text-muted)}
+table{border-collapse:collapse;width:100%;margin-top:var(--space-5);font-size:var(--text-small)}
+td,th{text-align:left;padding:var(--space-3) var(--space-3) var(--space-3) 0;border-bottom:var(--border-w) solid var(--line);vertical-align:baseline}
+.row{display:flex;flex-wrap:wrap;gap:var(--space-5);align-items:center;margin-top:var(--space-5)}
+.btn{font:600 var(--text-body) var(--font-body);background:var(--text);color:var(--bg);border:var(--border-w) solid var(--text);border-radius:var(--radius-control);padding:var(--space-3) var(--space-5);cursor:pointer;transition:transform var(--dur-ui)}
+.btn:active{transform:translateY(1px)}
+.btn.secondary{background:none;color:var(--text)}
+.pill{display:inline-flex;align-items:center;gap:var(--space-2);border-radius:var(--radius-pill);padding:var(--space-1) var(--space-4);font:600 var(--text-small) var(--font-body);background:var(--accent);color:var(--on-accent)}
+.card{background:var(--surface);border:var(--border-w) solid var(--line);border-radius:var(--radius-control);padding:var(--space-5);max-width:420px}
+.card p{margin-top:var(--space-1)}
+.spacebar{display:inline-block;height:16px;background:var(--accent);vertical-align:middle;margin-right:var(--space-3)}
+code{font:500 0.9em ui-monospace,Menlo,Consolas,monospace}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-6)}
+@media(max-width:700px){.cols{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<main>
+  <h1>Style guide</h1>
+  <p class="muted">The design system for ismercuryretro.com. One question, one answer, and a page that changes sides depending on it.</p>
+  <div class="toggle" role="group" aria-label="Preview state">
+    <button type="button" aria-pressed="true" data-set="direct">Preview: No</button>
+    <button type="button" aria-pressed="false" data-set="retrograde">Preview: Yes</button>
+  </div>
+
+  <section class="hero" aria-label="Answer preview">
+    <p class="answer" id="answer" style="max-width:none">NO</p>
+    <svg class="loop draw" id="loop" viewBox="0 0 1200 200" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><path pathLength="1" d="{{LOOP_WIDE}}"/></svg>
+  </section>
+
+  <h2>Principle</h2>
+  <p>The answer is the page. Mercury goes retrograde when it appears to loop backwards against the stars, so the identity is built on that loop: a single line that doubles back, drawn once when the page loads. Everything else stays quiet.</p>
+  <p>The two answers are two themes. <b>No</b> is a daylight page and <b>Yes</b> is a night page. A visitor sees the answer before they read it.</p>
+
+  <h2>Color</h2>
+  <p class="muted">Themes swap by setting <code>data-state</code> on <code>&lt;html&gt;</code>. Use the semantic tokens in components; raw palette values are for building the tokens only.</p>
+  <h3>Semantic tokens (current state)</h3>
+  <div class="swatches">
+    <div class="sw"><i style="background:var(--bg);border-bottom:2px solid var(--line)"></i><b>--bg</b><span>Page</span></div>
+    <div class="sw"><i style="background:var(--surface);border-bottom:2px solid var(--line)"></i><b>--surface</b><span>Cards</span></div>
+    <div class="sw"><i style="background:var(--text)"></i><b>--text</b><span>Body, headings</span></div>
+    <div class="sw"><i style="background:var(--text-muted)"></i><b>--text-muted</b><span>Secondary text</span></div>
+    <div class="sw"><i style="background:var(--accent)"></i><b>--accent</b><span>The answer, focus ring</span></div>
+    <div class="sw"><i style="background:var(--line)"></i><b>--line</b><span>Borders</span></div>
+  </div>
+  <h3>Palette</h3>
+  <div class="swatches">
+    <div class="sw"><i style="background:#12154f"></i><b>Ultramarine 900</b><span>#12154f · ink</span></div>
+    <div class="sw"><i style="background:#1a1f6b"></i><b>Ultramarine 800</b><span>#1a1f6b · Yes page</span></div>
+    <div class="sw"><i style="background:#e9eeff"></i><b>Daybreak 100</b><span>#e9eeff · No page</span></div>
+    <div class="sw"><i style="background:#ffe3f2"></i><b>Orchid 100</b><span>#ffe3f2 · Yes text</span></div>
+    <div class="sw"><i style="background:#ff5fa2"></i><b>Signal 500</b><span>#ff5fa2 · Yes answer</span></div>
+    <div class="sw"><i style="background:#1b7f6d"></i><b>Clear 600</b><span>#1b7f6d · No answer</span></div>
+    <div class="sw"><i style="background:#b8795a"></i><b>Copper 500</b><span>#b8795a · Mercury, once per page</span></div>
+  </div>
+
+  <h2>Typography</h2>
+  <div class="cols">
+    <div>
+      <h3 style="margin-top:var(--space-5)">Bricolage Grotesque</h3>
+      <p class="muted">Display and headings. The answer uses weight 800 at 75% width; headings use 600–700 at 100%.</p>
+      <p style="font:800 5rem/0.85 var(--font-display);font-stretch:75%;letter-spacing:-0.03em;color:var(--accent);margin-top:var(--space-4)">Yes. No.</p>
+    </div>
+    <div>
+      <h3 style="margin-top:var(--space-5)">Instrument Sans</h3>
+      <p class="muted">Body, UI and captions. Weights 400, 500 and 600.</p>
+      <p style="margin-top:var(--space-4)">Mercury appears to move backwards a few times a year. It is an optical effect of the planets’ orbits.</p>
+    </div>
+  </div>
+  <table>
+    <tr><th>Role</th><th>Token</th><th>Size</th><th>Weight</th><th>Line height</th></tr>
+    <tr><td>Answer</td><td><code>--text-answer</code></td><td>7rem – 26rem</td><td>800 / 75% width</td><td>0.82</td></tr>
+    <tr><td>Heading 1</td><td><code>--text-h1</code></td><td>2 – 3.5rem</td><td>700</td><td>1.1</td></tr>
+    <tr><td>Heading 2</td><td><code>--text-h2</code></td><td>1.5 – 2rem</td><td>650</td><td>1.1</td></tr>
+    <tr><td>Heading 3</td><td><code>--text-h3</code></td><td>1.25rem</td><td>600</td><td>1.1</td></tr>
+    <tr><td>Body</td><td><code>--text-body</code></td><td>1.0625rem</td><td>400</td><td>1.55</td></tr>
+    <tr><td>Small</td><td><code>--text-small</code></td><td>0.875rem</td><td>400–600</td><td>1.55</td></tr>
+  </table>
+  <p class="muted">Keep text under 60 characters wide (<code>--measure</code>). Use sentence case everywhere except the answer.</p>
+
+  <h2>Space and shape</h2>
+  <p>A 4px base. Components use steps 2–6; sections use 8–9.</p>
+  <table>
+    <tr><td><code>--space-1</code></td><td><span class="spacebar" style="width:4px"></span>4px</td><td><code>--space-5</code></td><td><span class="spacebar" style="width:24px"></span>24px</td></tr>
+    <tr><td><code>--space-2</code></td><td><span class="spacebar" style="width:8px"></span>8px</td><td><code>--space-6</code></td><td><span class="spacebar" style="width:32px"></span>32px</td></tr>
+    <tr><td><code>--space-3</code></td><td><span class="spacebar" style="width:12px"></span>12px</td><td><code>--space-7</code></td><td><span class="spacebar" style="width:48px"></span>48px</td></tr>
+    <tr><td><code>--space-4</code></td><td><span class="spacebar" style="width:16px"></span>16px</td><td><code>--space-8</code></td><td><span class="spacebar" style="width:72px"></span>72px</td></tr>
+  </table>
+  <p class="muted">Two radii only: 6px for controls and cards, a full pill for the status label. Borders are 2px. No shadows; depth comes from the surface color.</p>
+
+  <h2>Components</h2>
+  <div class="row">
+    <button class="btn" type="button">Copy link</button>
+    <button class="btn secondary" type="button">Show next retrograde</button>
+    <span class="pill">Retrograde until 12 Nov</span>
+  </div>
+  <div class="row">
+    <div class="card">
+      <h3 style="margin-top:0">Next retrograde</h3>
+      <p>Starts and ends dates sit here, in body text, with the year included.</p>
+    </div>
+  </div>
+  <p class="muted">Buttons say what they do (“Copy link”, not “Submit”). The sample date above is placeholder content.</p>
+
+  <h2>Motion</h2>
+  <p>One animation: on load the loop line draws itself over 1.6 seconds. The preview toggle above replays it. UI responses (button press, theme swap) take 140ms. With reduced motion, both are instant.</p>
+
+  <h2>Voice</h2>
+  <p>Answer first, then facts. Plain verbs, no horoscope language, no jokes at the visitor’s expense. “Mercury is retrograde until 12 November” beats “Mercury is feeling reflective”.</p>
+
+  <h2>Assets</h2>
+  <table>
+    <tr><td><code>assets/favicon.svg</code></td><td>Mark, 64×64, any size</td></tr>
+    <tr><td><code>assets/apple-touch-icon.png</code></td><td>180×180</td></tr>
+    <tr><td><code>assets/og-image.png</code></td><td>Open Graph, 1200×630</td></tr>
+    <tr><td><code>assets/twitter-card.png</code></td><td>Twitter / X large card, 1200×600</td></tr>
+    <tr><td><code>head.html</code></td><td>Metadata to paste into the site’s <code>&lt;head&gt;</code></td></tr>
+  </table>
+</main>
+<script>
+(function(){
+  var root=document.documentElement, ans=document.getElementById('answer'), loop=document.getElementById('loop');
+  document.querySelectorAll('[data-set]').forEach(function(b){
+    b.addEventListener('click',function(){
+      var s=b.getAttribute('data-set');
+      root.setAttribute('data-state',s);
+      ans.textContent=s==='retrograde'?'YES':'NO';
+      document.querySelectorAll('[data-set]').forEach(function(x){x.setAttribute('aria-pressed',x===b)});
+      loop.classList.remove('draw'); void loop.getBoundingClientRect(); loop.classList.add('draw');
+    });
+  });
+})();
+</script>
+</body>
+</html>
