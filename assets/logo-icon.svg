@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="Mercury"><g transform="translate(0 0) scale(1)">
+<defs><clipPath id="ic"><circle cx="50" cy="50" r="46"/></clipPath></defs>
+<circle cx="50" cy="50" r="46" fill="#8E877F"/>
+<circle cx="44" cy="44" r="37" fill="#C9C2B9" clip-path="url(#ic)"/>
+<g fill="#A9A198">
+<circle cx="31" cy="38" r="8"/><circle cx="60" cy="29" r="5.5"/><circle cx="62" cy="60" r="9.5"/>
+<circle cx="35" cy="67" r="5.5"/><circle cx="74" cy="42" r="3.5"/>
+</g>
+<g fill="#B8B0A6"><circle cx="29" cy="36" r="3.2"/><circle cx="59" cy="27.5" r="2.2"/><circle cx="60" cy="57.5" r="3.8"/></g>
+</g></svg>

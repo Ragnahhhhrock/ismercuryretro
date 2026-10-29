@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-state="direct">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -9,160 +9,308 @@
 <link rel="stylesheet" href="tokens.css">
 <style>
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font:400 var(--text-body)/var(--leading-body) var(--font-body);transition:background var(--dur-ui),color var(--dur-ui)}
-main{max-width:1040px;margin:0 auto;padding:var(--space-7) var(--gutter) var(--space-9)}
-h1,h2,h3{font-family:var(--font-display);line-height:var(--leading-heading);margin:0;letter-spacing:-0.01em}
-h1{font-size:var(--text-h1);font-weight:700}
-h2{font-size:var(--text-h2);font-weight:650;margin-top:var(--space-9)}
-h3{font-size:var(--text-h3);font-weight:600;margin-top:var(--space-6)}
-p{max-width:var(--measure);margin:var(--space-3) 0 0}
-a{color:var(--link)}
-:focus-visible{outline:var(--focus-ring) solid var(--accent);outline-offset:3px}
-.muted{color:var(--text-muted)}
-.toggle{display:inline-flex;border:var(--border-w) solid var(--text);border-radius:var(--radius-control);margin-top:var(--space-5)}
-.toggle button{font:600 var(--text-small) var(--font-body);background:none;color:var(--text);border:0;padding:var(--space-2) var(--space-4);cursor:pointer}
-.toggle button[aria-pressed="true"]{background:var(--text);color:var(--bg)}
-.hero{margin-top:var(--space-7);border-top:var(--border-w) solid var(--text);padding-top:var(--space-5)}
-.answer{font:800 var(--text-answer)/var(--leading-tight) var(--font-display);font-stretch:75%;letter-spacing:-0.03em;color:var(--accent);margin:0}
-.loop{width:100%;height:auto;display:block;margin-top:var(--space-5)}
-.loop path{stroke:var(--text);stroke-width:3;fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1;stroke-dashoffset:0}
-.loop.draw path{animation:draw var(--dur-draw) var(--ease-out) both}
-@keyframes draw{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
-.swatches{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:var(--space-4);margin-top:var(--space-5)}
-.sw{border:var(--border-w) solid var(--line);border-radius:var(--radius-control);overflow:hidden;font-size:var(--text-small)}
-.sw i{display:block;height:72px}
-.sw b{display:block;padding:var(--space-2) var(--space-3) 0}
-.sw span{display:block;padding:0 var(--space-3) var(--space-2);color:var(--text-muted)}
-table{border-collapse:collapse;width:100%;margin-top:var(--space-5);font-size:var(--text-small)}
-td,th{text-align:left;padding:var(--space-3) var(--space-3) var(--space-3) 0;border-bottom:var(--border-w) solid var(--line);vertical-align:baseline}
-.row{display:flex;flex-wrap:wrap;gap:var(--space-5);align-items:center;margin-top:var(--space-5)}
-.btn{font:600 var(--text-body) var(--font-body);background:var(--text);color:var(--bg);border:var(--border-w) solid var(--text);border-radius:var(--radius-control);padding:var(--space-3) var(--space-5);cursor:pointer;transition:transform var(--dur-ui)}
-.btn:active{transform:translateY(1px)}
-.btn.secondary{background:none;color:var(--text)}
-.pill{display:inline-flex;align-items:center;gap:var(--space-2);border-radius:var(--radius-pill);padding:var(--space-1) var(--space-4);font:600 var(--text-small) var(--font-body);background:var(--accent);color:var(--on-accent)}
-.card{background:var(--surface);border:var(--border-w) solid var(--line);border-radius:var(--radius-control);padding:var(--space-5);max-width:420px}
-.card p{margin-top:var(--space-1)}
-.spacebar{display:inline-block;height:16px;background:var(--accent);vertical-align:middle;margin-right:var(--space-3)}
-code{font:500 0.9em ui-monospace,Menlo,Consolas,monospace}
-.cols{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-6)}
-@media(max-width:700px){.cols{grid-template-columns:1fr}}
+body{margin:0;background:var(--bg);color:var(--fg);font:400 var(--text-body)/1.5 var(--body);padding:28px max(16px,env(safe-area-inset-right)) 96px}
+main{max-width:980px;margin-inline:auto}
+h1{margin:0;font:800 var(--text-page-title)/1.02 var(--display);letter-spacing:-0.02em}
+h2{margin:56px 0 4px;font:700 var(--text-label)/1.3 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+h3{margin:22px 0 6px;font:700 1.15rem/1.25 var(--display)}
+p{margin:8px 0 0;max-width:var(--measure)}
+.muted{color:var(--muted)}
+code{font:500 .88em var(--mono)}
+a{color:var(--fg);text-underline-offset:3px}
+:focus-visible{outline:2px solid var(--state,var(--fg));outline-offset:2px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.top svg{height:48px;width:auto}
+.seg{display:inline-flex;border:var(--border);border-radius:var(--r-control);background:var(--panel);overflow:hidden}
+.seg button{font:500 .9rem var(--body);color:var(--fg);background:none;border:0;min-height:var(--tap);padding:0 14px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--state-bg,var(--line));font-weight:800}
+.controls{display:flex;gap:12px;flex-wrap:wrap;margin-top:16px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin-top:14px}
+.sw{background:var(--panel);border:var(--border);border-radius:var(--r-stat);overflow:hidden}
+.sw i{display:block;height:64px;border-bottom:var(--border)}
+.sw b{display:block;padding:8px 12px 0;font-size:.9rem}
+.sw span{display:block;padding:0 12px 10px;font:500 .78rem/1.4 var(--mono);color:var(--muted)}
+.demo{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;margin-top:14px;align-items:start}
+.frame{max-width:var(--column);width:100%}
+.stack{display:flex;flex-direction:column;gap:var(--gap-page)}
+table{width:100%;border-collapse:collapse;margin-top:12px;font-size:.9rem}
+td,th{text-align:left;padding:10px 12px 10px 0;border-top:var(--border);vertical-align:baseline}
+th{font:700 var(--text-label)/1.3 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);border-top:0}
+td:nth-child(2),td:nth-child(3){font-family:var(--mono)}
+
+/* ---- live components, same rules as index.html ---- */
+.verdict{background:var(--state-bg);border-radius:var(--r-verdict);padding:var(--pad-verdict) var(--pad-verdict) 22px;display:flex;flex-direction:column;gap:4px}
+.verdict h4{margin:0;font:600 var(--text-verdict-q)/1.3 var(--display);letter-spacing:.005em}
+.answer{margin:0;font:800 var(--text-answer)/.86 var(--display);letter-spacing:-.035em;color:var(--state);padding-block:.06em .02em}
+.line{margin:0;font-size:1.05rem;line-height:1.4;text-wrap:balance}
+.sub{margin:0;font:500 .82rem/1.4 var(--mono);color:var(--muted)}
+.panel{background:var(--panel);border:var(--border);border-radius:var(--r-panel);padding:var(--pad-panel);min-width:0}
+.panel h5{margin:0 0 2px;font:700 var(--text-label)/1.3 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.row{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding-block:10px;border-top:var(--border)}
+.row:first-of-type{border-top:0}
+.row dt{color:var(--muted);font-size:.9rem}
+.row dd{margin:0;font:500 .95rem/1.3 var(--mono);text-align:right;font-variant-numeric:tabular-nums}
+dl{margin:6px 0 0}
+.windows{list-style:none;margin:6px 0 0;padding:0}
+.windows li{padding-block:11px;border-top:var(--border);display:flex;flex-direction:column;gap:2px}
+.windows li:first-child{border-top:0}
+.w-top{display:flex;flex-wrap:wrap;justify-content:space-between;gap:2px 12px;align-items:baseline}
+.w-dates{font:500 .92rem var(--mono);font-variant-numeric:tabular-nums}
+.w-len{font:500 .82rem var(--mono);color:var(--muted)}
+.now-tag{display:inline-block;font:700 .66rem/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;background:var(--yes);color:var(--bg);padding:3px 6px;border-radius:var(--r-tag);margin-left:8px;vertical-align:2px}
+.chip{display:inline-flex;align-items:center;gap:8px;font:500 .78rem/1.2 var(--mono);padding:8px 12px;border-radius:var(--r-pill);color:var(--fg)}
+.chip i{width:8px;height:8px;border-radius:50%}
+.chip.yes{background:var(--yes-bg)}.chip.yes i{background:var(--yes)}
+.chip.no{background:var(--no-bg)}.chip.no i{background:var(--no)}
+.ctl{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.ctl button,.ctl input{font:500 .95rem var(--body);color:var(--fg);background:var(--bg);border:var(--border);border-radius:var(--r-control);min-height:var(--tap);padding:0 14px}
+.ctl button{min-width:var(--tap);cursor:pointer}
+.ctl button:active{transform:translateY(1px)}
+.ctl input{flex:1 1 150px;min-width:0;font:500 .9rem var(--mono)}
+.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.stat{background:var(--panel);border:var(--border);border-radius:var(--r-stat);padding:12px 14px}
+.stat b{display:block;font:800 2.1rem/1 var(--display);letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.stat span{display:block;margin-top:6px;font-size:.85rem;color:var(--muted);line-height:1.35}
+.callout{background:var(--state-bg);border-radius:var(--r-panel);padding:14px 16px}.callout p{margin:0}
+.coffee{display:flex;align-items:center;justify-content:center;min-height:52px;padding:0 24px;border-radius:var(--r-pill);background:var(--state);color:var(--panel);font:700 .95rem var(--body);text-decoration:none}
+.tabs{background:var(--panel);border:var(--border);border-radius:var(--r-panel);padding:6px 8px}
+.tabs-in{display:flex;gap:2px}
+.tabs a{flex:1;min-width:0;min-height:var(--tab-height);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font:600 .7rem/1.1 var(--body);color:var(--muted);text-decoration:none;border-radius:var(--r-tab);padding:4px 2px}
+.tabs svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.tabs a[aria-current="page"]{color:var(--state);background:var(--state-bg);box-shadow:inset 0 3px 0 var(--state);font-weight:800}
+.tabs a[aria-current="page"] svg{stroke-width:2.3}
+.chart{width:100%;height:auto;display:block}
+.g-grid{stroke:var(--line);stroke-width:1}.g-zero{stroke:var(--muted);stroke-width:1}
+.g-line{fill:none;stroke:var(--muted);stroke-width:1.5;stroke-linejoin:round}
+.g-retro-line{fill:none;stroke:var(--yes);stroke-width:2.25;stroke-linejoin:round}
+.g-retro-area{fill:var(--yes);fill-opacity:.22}
+.g-text{fill:var(--muted);font:400 10px var(--mono)}
+
+/* ---- logo display ---- */
+.lg{display:flex;align-items:center;justify-content:center;min-height:150px;border-radius:var(--r-panel);padding:24px;border:var(--border)}
+.lg svg{height:72px;width:auto}
+.lg.on-light{background:#EAEFF5}.lg.on-dark{background:#0B1220}
+.lg.sm svg{height:48px}
+.sizes{display:flex;align-items:flex-end;gap:28px;flex-wrap:wrap;margin-top:12px}
+.clear{position:relative;display:inline-block;padding:24px;outline:1px dashed var(--muted);outline-offset:0}
+.clear svg{height:72px;width:auto;display:block}
+.mx{display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-top:12px}
+.mx svg{height:64px;width:64px;border-radius:14px}
+.no-do{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:12px}
+.no-do div{border:var(--border);border-radius:var(--r-stat);padding:14px;background:var(--panel)}
+.no-do svg{height:44px;width:auto;display:block;margin-bottom:10px}
+@media (prefers-reduced-motion:reduce){.ctl button:active{transform:none}}
 </style>
 </head>
-<body>
+<body data-state="no">
 <main>
-  <h1>Style guide</h1>
-  <p class="muted">The design system for ismercuryretro.com. One question, one answer, and a page that changes sides depending on it.</p>
-  <div class="toggle" role="group" aria-label="Preview state">
-    <button type="button" aria-pressed="true" data-set="direct">Preview: No</button>
-    <button type="button" aria-pressed="false" data-set="retrograde">Preview: Yes</button>
+  <div class="top">
+    <div><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 210 100" role="img" aria-label="Mercury Rx"><g transform="translate(0 0) scale(1)">
+<defs><clipPath id="g1"><circle cx="50" cy="50" r="46"/></clipPath></defs>
+<circle cx="50" cy="50" r="46" fill="#8E877F"/>
+<circle cx="44" cy="44" r="37" fill="#C9C2B9" clip-path="url(#g1)"/>
+<g fill="#A9A198">
+<circle cx="31" cy="38" r="8"/><circle cx="60" cy="29" r="5.5"/><circle cx="62" cy="60" r="9.5"/>
+<circle cx="35" cy="67" r="5.5"/><circle cx="74" cy="42" r="3.5"/>
+</g>
+<g fill="#B8B0A6"><circle cx="29" cy="36" r="3.2"/><circle cx="59" cy="27.5" r="2.2"/><circle cx="60" cy="57.5" r="3.8"/></g>
+</g><path d="M119.71714285714286 79.0V24.31428571428571H143.0Q147.55714285714285 24.31428571428571 151.28571428571428 25.018571428571423Q155.01428571428573 25.722857142857137 157.87285714285716 27.089999999999996Q160.73142857142858 28.457142857142856 162.72 30.40428571428571Q164.70857142857142 32.35142857142856 165.70285714285714 34.87857142857142Q166.69714285714286 37.40571428571428 166.69714285714286 40.47142857142857Q166.69714285714286 43.37142857142857 165.78571428571428 45.69142857142857Q164.87428571428572 48.01142857142857 163.01 49.75142857142857Q161.1457142857143 51.49142857142857 158.32857142857142 52.56857142857143Q155.51142857142858 53.645714285714284 151.78285714285715 54.14285714285714V55.385714285714286Q156.5057142857143 55.88285714285714 159.1157142857143 57.498571428571424Q161.72571428571428 59.114285714285714 163.1342857142857 61.76571428571429Q164.54285714285714 64.41714285714286 165.62 68.14571428571429L168.76857142857142 79.0H153.93714285714287L151.53428571428572 68.97428571428571Q150.78857142857143 65.66 149.50428571428571 63.83714285714285Q148.22 62.01428571428571 146.23142857142858 61.31Q144.24285714285713 60.605714285714285 141.26 60.605714285714285H133.05714285714285V79.0ZM133.05714285714285 50.745714285714286H142.08857142857144Q147.14285714285714 50.745714285714286 149.95999999999998 48.75714285714285Q152.77714285714285 46.76857142857143 152.77714285714285 42.54285714285714Q152.77714285714285 38.4 150.20857142857142 36.41142857142857Q147.64 34.42285714285714 142.42000000000002 34.42285714285714H133.05714285714285Z" fill="var(--fg)"/><path d="M169.2309142857143 83.97142857142858 180.47628571428572 66.90948571428572 169.29554285714286 49.847542857142855H181.25182857142858L186.8745142857143 62.385485714285714H188.10245714285716L193.72514285714288 49.847542857142855H205.6814285714286L194.43605714285715 66.90948571428572L205.74605714285715 83.97142857142858H193.8544L188.10245714285716 71.30422857142858H186.8745142857143L181.25182857142858 83.97142857142858Z" fill="var(--yes)"/></svg></div>
+    <div class="controls" style="margin:0">
+      <div class="seg" role="group" aria-label="Answer state"><button type="button" aria-pressed="true" data-state-set="no">Answer: No</button><button type="button" aria-pressed="false" data-state-set="yes">Answer: Yes</button></div>
+      <div class="seg" role="group" aria-label="Theme"><button type="button" aria-pressed="true" data-theme-set="light">Light</button><button type="button" aria-pressed="false" data-theme-set="dark">Dark</button></div>
+    </div>
   </div>
-
-  <section class="hero" aria-label="Answer preview">
-    <p class="answer" id="answer" style="max-width:none">NO</p>
-    <svg class="loop draw" id="loop" viewBox="0 0 1200 200" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><path pathLength="1" d="M151.0,127.8 L154.5,123.6 L157.9,119.4 L161.0,115.1 L164.0,110.7 L166.7,106.4 L169.2,102.0 L171.5,97.6 L173.6,93.2 L175.5,88.9 L177.1,84.5 L178.6,80.2 L179.8,76.0 L180.8,71.8 L181.7,67.7 L182.3,63.6 L182.7,59.6 L183.0,55.8 L183.1,52.0 L182.9,48.4 L182.6,44.8 L182.2,41.4 L181.6,38.2 L180.8,35.1 L179.8,32.1 L178.8,29.3 L177.6,26.7 L176.3,24.2 L174.8,22.0 L173.3,19.9 L171.6,18.0 L169.9,16.3 L168.1,14.8 L166.2,13.5 L164.3,12.4 L162.3,11.5 L160.3,10.8 L158.2,10.3 L156.2,10.0 L154.1,10.0 L152.0,10.2 L149.9,10.6 L147.9,11.1 L145.9,12.0 L144.0,13.0 L142.1,14.2 L140.2,15.6 L138.4,17.2 L136.8,19.0 L135.2,21.1 L133.7,23.3 L132.3,25.6 L131.1,28.2 L129.9,30.9 L129.0,33.8 L128.1,36.9 L127.4,40.1 L126.9,43.4 L126.5,46.9 L126.3,50.5 L126.3,54.2 L126.5,58.0 L126.8,61.9 L127.4,65.9 L128.1,70.0 L129.1,74.2 L130.2,78.4 L131.6,82.7 L133.2,87.0 L135.0,91.4 L137.0,95.8 L139.2,100.1 L141.6,104.5 L144.2,108.9 L147.1,113.2 L150.1,117.6 L153.4,121.8 L156.9,126.1 L160.5,130.2 L164.4,134.3 L168.5,138.3 L172.8,142.2 L177.2,146.1 L181.9,149.8 L186.7,153.4 L191.7,156.8 L196.8,160.2 L202.1,163.3 L207.6,166.4 L213.2,169.3 L219.0,172.0 L224.8,174.5 L230.8,176.9 L236.9,179.1 L243.1,181.1 L249.4,182.9 L255.8,184.5 L262.3,185.9 L268.8,187.1 L275.4,188.1 L282.0,188.9 L288.6,189.5 L295.3,189.8 L302.0,190.0 L308.7,189.9 L315.4,189.7 L322.0,189.2 L328.7,188.5 L335.3,187.6 L341.8,186.5 L348.3,185.2 L354.7,183.6 L361.0,181.9 L367.3,180.0 L373.4,177.9 L379.5,175.6 L385.4,173.1 L391.2,170.5 L396.9,167.7 L402.4,164.7 L407.8,161.6 L413.0,158.3 L418.1,154.9 L423.0,151.4 L427.7,147.7 L432.3,144.0 L436.6,140.1 L440.8,136.1 L444.7,132.1 L448.5,127.9 L452.1,123.8 L455.4,119.5 L458.6,115.2 L461.5,110.9 L464.3,106.5 L466.8,102.1 L469.1,97.7 L471.2,93.4 L473.0,89.0 L474.7,84.7 L476.2,80.4 L477.4,76.1 L478.5,71.9 L479.3,67.8 L479.9,63.7 L480.4,59.8 L480.6,55.9 L480.7,52.1 L480.6,48.5 L480.3,44.9 L479.8,41.5 L479.2,38.3 L478.4,35.2 L477.5,32.2 L476.5,29.4 L475.3,26.8 L473.9,24.3 L472.5,22.0 L471.0,19.9 L469.3,18.0 L467.6,16.3 L465.8,14.8 L463.9,13.5 L462.0,12.4 L460.0,11.5 L458.0,10.8 L455.9,10.3 L453.9,10.1 L451.8,10.0 L449.7,10.2 L447.7,10.5 L445.6,11.1 L443.6,11.9 L441.7,12.9 L439.8,14.1 L437.9,15.6 L436.1,17.2 L434.5,19.0 L432.9,21.0 L431.4,23.2 L430.0,25.6 L428.8,28.1 L427.6,30.8 L426.6,33.7 L425.8,36.8 L425.1,39.9 L424.6,43.3 L424.2,46.8 L424.0,50.3 L424.0,54.1 L424.1,57.9 L424.5,61.8 L425.0,65.8 L425.8,69.9 L426.7,74.1 L427.8,78.3 L429.2,82.6 L430.8,86.9 L432.5,91.2 L434.5,95.6 L436.7,100.0 L439.1,104.4 L441.8,108.8 L444.6,113.1 L447.7,117.4 L450.9,121.7 L454.4,125.9 L458.1,130.1 L461.9,134.2 L466.0,138.2 L470.3,142.1 L474.7,145.9 L479.3,149.7 L484.2,153.2 L489.1,156.7 L494.3,160.1 L499.6,163.2 L505.1,166.3 L510.7,169.2 L516.4,171.9 L522.3,174.4 L528.3,176.8 L534.4,179.0 L540.6,181.0 L546.9,182.8 L553.2,184.4 L559.7,185.9 L566.2,187.1 L572.8,188.1 L579.4,188.9 L586.1,189.5 L592.7,189.8 L599.4,190.0 L606.1,189.9 L612.8,189.7 L619.5,189.2 L626.1,188.5 L632.7,187.6 L639.2,186.5 L645.7,185.2 L652.1,183.7 L658.5,182.0 L664.7,180.1 L670.9,178.0 L676.9,175.7 L682.9,173.2 L688.7,170.6 L694.4,167.8 L699.9,164.8 L705.3,161.7 L710.5,158.5 L715.6,155.1 L720.5,151.5 L725.2,147.9 L729.8,144.1 L734.1,140.2 L738.3,136.3 L742.3,132.2 L746.0,128.1 L749.6,123.9 L753.0,119.6 L756.1,115.3 L759.1,111.0 L761.8,106.6 L764.3,102.3 L766.7,97.9 L768.7,93.5 L770.6,89.1 L772.3,84.8 L773.8,80.5 L775.0,76.2 L776.1,72.1 L776.9,67.9 L777.6,63.9 L778.0,59.9 L778.3,56.0 L778.3,52.3 L778.2,48.6 L777.9,45.1 L777.5,41.7 L776.9,38.4 L776.1,35.3 L775.2,32.3 L774.1,29.5 L772.9,26.9 L771.6,24.4 L770.2,22.1 L768.7,20.0 L767.0,18.1 L765.3,16.4 L763.5,14.8 L761.6,13.5 L759.7,12.4 L757.7,11.5 L755.7,10.8 L753.6,10.3 L751.6,10.1 L749.5,10.0 L747.4,10.2 L745.4,10.5 L743.3,11.1 L741.3,11.9 L739.4,12.9 L737.5,14.1 L735.6,15.5 L733.8,17.1 L732.2,18.9 L730.6,20.9 L729.1,23.1 L727.7,25.5 L726.4,28.0 L725.3,30.7 L724.3,33.6 L723.5,36.7 L722.8,39.8 L722.2,43.2 L721.8,46.6 L721.6,50.2 L721.6,53.9 L721.8,57.8 L722.1,61.7 L722.6,65.7 L723.4,69.8 L724.3,73.9 L725.5,78.2 L726.8,82.4 L728.4,86.8 L730.1,91.1 L732.1,95.5 L734.3,99.9 L736.7,104.2 L739.3,108.6 L742.2,113.0 L745.2,117.3 L748.5,121.6 L751.9,125.8 L755.6,130.0 L759.4,134.1 L763.5,138.1 L767.8,142.0 L772.2,145.8 L776.8,149.5 L781.6,153.1 L786.6,156.6 L791.8,159.9 L797.1,163.1 L802.5,166.2 L808.1,169.1 L813.9,171.8 L819.7,174.4 L825.7,176.7 L831.8,178.9 L838.0,181.0 L844.3,182.8 L850.7,184.4 L857.1,185.8 L863.7,187.0 L870.2,188.0 L876.8,188.9 L883.5,189.4 L890.2,189.8 L896.8,190.0 L903.5,190.0 L910.2,189.7 L916.9,189.2 L923.5,188.5 L930.1,187.6 L936.7,186.5 L943.2,185.2 L949.6,183.7 L955.9,182.0 L962.2,180.1 L968.3,178.0 L974.4,175.8 L980.3,173.3 L986.1,170.7 L991.8,167.9 L997.4,164.9 L1002.7,161.8 L1008.0,158.6 L1013.1,155.2 L1018.0,151.6 L1022.7,148.0 L1027.3,144.2 L1031.6,140.4 L1035.8,136.4 L1039.8,132.3 L1043.6,128.2 L1047.1,124.0 L1050.5,119.8 L1053.7,115.5 L1056.6,111.1 L1059.4,106.8 L1061.9,102.4 L1064.2,98.0 L1066.3,93.6 L1068.2,89.3 L1069.9,84.9 L1071.4,80.6 L1072.6,76.4 L1073.7,72.2"/></svg>
-  </section>
+  <h1 style="margin-top:28px">Style guide</h1>
+  <p class="muted">The design system for ismercuryretro.com. These are the tokens and components the live site already uses (<code>tokens.css</code> mirrors <code>index.html</code>), plus the logo.</p>
 
   <h2>Principle</h2>
-  <p>The answer is the page. Mercury goes retrograde when it appears to loop backwards against the stars, so the identity is built on that loop: a single line that doubles back, drawn once when the page loads. Everything else stays quiet.</p>
-  <p>The two answers are two themes. <b>No</b> is a daylight page and <b>Yes</b> is a night page. A visitor sees the answer before they read it.</p>
+  <p>The answer is the page. One word, set huge, in the color of its state: burnt orange for yes, teal for no. Everything else is quiet, narrow and legible: a single 460px column, soft panels, monospace for data.</p>
+
+  <h2>Logo</h2>
+  <p>A flat, emoji-style Mercury next to <b>Rx</b>, the astrologers’ mark for retrograde. The R is the page’s ink color; the x is the retrograde orange.</p>
+  <div class="demo">
+    <div class="lg on-light"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 210 100" role="img" aria-label="Mercury Rx"><g transform="translate(0 0) scale(1)">
+<defs><clipPath id="g3"><circle cx="50" cy="50" r="46"/></clipPath></defs>
+<circle cx="50" cy="50" r="46" fill="#8E877F"/>
+<circle cx="44" cy="44" r="37" fill="#C9C2B9" clip-path="url(#g3)"/>
+<g fill="#A9A198">
+<circle cx="31" cy="38" r="8"/><circle cx="60" cy="29" r="5.5"/><circle cx="62" cy="60" r="9.5"/>
+<circle cx="35" cy="67" r="5.5"/><circle cx="74" cy="42" r="3.5"/>
+</g>
+<g fill="#B8B0A6"><circle cx="29" cy="36" r="3.2"/><circle cx="59" cy="27.5" r="2.2"/><circle cx="60" cy="57.5" r="3.8"/></g>
+</g><path d="M119.71714285714286 79.0V24.31428571428571H143.0Q147.55714285714285 24.31428571428571 151.28571428571428 25.018571428571423Q155.01428571428573 25.722857142857137 157.87285714285716 27.089999999999996Q160.73142857142858 28.457142857142856 162.72 30.40428571428571Q164.70857142857142 32.35142857142856 165.70285714285714 34.87857142857142Q166.69714285714286 37.40571428571428 166.69714285714286 40.47142857142857Q166.69714285714286 43.37142857142857 165.78571428571428 45.69142857142857Q164.87428571428572 48.01142857142857 163.01 49.75142857142857Q161.1457142857143 51.49142857142857 158.32857142857142 52.56857142857143Q155.51142857142858 53.645714285714284 151.78285714285715 54.14285714285714V55.385714285714286Q156.5057142857143 55.88285714285714 159.1157142857143 57.498571428571424Q161.72571428571428 59.114285714285714 163.1342857142857 61.76571428571429Q164.54285714285714 64.41714285714286 165.62 68.14571428571429L168.76857142857142 79.0H153.93714285714287L151.53428571428572 68.97428571428571Q150.78857142857143 65.66 149.50428571428571 63.83714285714285Q148.22 62.01428571428571 146.23142857142858 61.31Q144.24285714285713 60.605714285714285 141.26 60.605714285714285H133.05714285714285V79.0ZM133.05714285714285 50.745714285714286H142.08857142857144Q147.14285714285714 50.745714285714286 149.95999999999998 48.75714285714285Q152.77714285714285 46.76857142857143 152.77714285714285 42.54285714285714Q152.77714285714285 38.4 150.20857142857142 36.41142857142857Q147.64 34.42285714285714 142.42000000000002 34.42285714285714H133.05714285714285Z" fill="#0F1A2E"/><path d="M169.2309142857143 83.97142857142858 180.47628571428572 66.90948571428572 169.29554285714286 49.847542857142855H181.25182857142858L186.8745142857143 62.385485714285714H188.10245714285716L193.72514285714288 49.847542857142855H205.6814285714286L194.43605714285715 66.90948571428572L205.74605714285715 83.97142857142858H193.8544L188.10245714285716 71.30422857142858H186.8745142857143L181.25182857142858 83.97142857142858Z" fill="#C2410C"/></svg></div>
+    <div class="lg on-dark"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 210 100" role="img" aria-label="Mercury Rx"><g transform="translate(0 0) scale(1)">
+<defs><clipPath id="g2"><circle cx="50" cy="50" r="46"/></clipPath></defs>
+<circle cx="50" cy="50" r="46" fill="#8E877F"/>
+<circle cx="44" cy="44" r="37" fill="#C9C2B9" clip-path="url(#g2)"/>
+<g fill="#A9A198">
+<circle cx="31" cy="38" r="8"/><circle cx="60" cy="29" r="5.5"/><circle cx="62" cy="60" r="9.5"/>
+<circle cx="35" cy="67" r="5.5"/><circle cx="74" cy="42" r="3.5"/>
+</g>
+<g fill="#B8B0A6"><circle cx="29" cy="36" r="3.2"/><circle cx="59" cy="27.5" r="2.2"/><circle cx="60" cy="57.5" r="3.8"/></g>
+</g><path d="M119.71714285714286 79.0V24.31428571428571H143.0Q147.55714285714285 24.31428571428571 151.28571428571428 25.018571428571423Q155.01428571428573 25.722857142857137 157.87285714285716 27.089999999999996Q160.73142857142858 28.457142857142856 162.72 30.40428571428571Q164.70857142857142 32.35142857142856 165.70285714285714 34.87857142857142Q166.69714285714286 37.40571428571428 166.69714285714286 40.47142857142857Q166.69714285714286 43.37142857142857 165.78571428571428 45.69142857142857Q164.87428571428572 48.01142857142857 163.01 49.75142857142857Q161.1457142857143 51.49142857142857 158.32857142857142 52.56857142857143Q155.51142857142858 53.645714285714284 151.78285714285715 54.14285714285714V55.385714285714286Q156.5057142857143 55.88285714285714 159.1157142857143 57.498571428571424Q161.72571428571428 59.114285714285714 163.1342857142857 61.76571428571429Q164.54285714285714 64.41714285714286 165.62 68.14571428571429L168.76857142857142 79.0H153.93714285714287L151.53428571428572 68.97428571428571Q150.78857142857143 65.66 149.50428571428571 63.83714285714285Q148.22 62.01428571428571 146.23142857142858 61.31Q144.24285714285713 60.605714285714285 141.26 60.605714285714285H133.05714285714285V79.0ZM133.05714285714285 50.745714285714286H142.08857142857144Q147.14285714285714 50.745714285714286 149.95999999999998 48.75714285714285Q152.77714285714285 46.76857142857143 152.77714285714285 42.54285714285714Q152.77714285714285 38.4 150.20857142857142 36.41142857142857Q147.64 34.42285714285714 142.42000000000002 34.42285714285714H133.05714285714285Z" fill="#E7ECF5"/><path d="M169.2309142857143 83.97142857142858 180.47628571428572 66.90948571428572 169.29554285714286 49.847542857142855H181.25182857142858L186.8745142857143 62.385485714285714H188.10245714285716L193.72514285714288 49.847542857142855H205.6814285714286L194.43605714285715 66.90948571428572L205.74605714285715 83.97142857142858H193.8544L188.10245714285716 71.30422857142858H186.8745142857143L181.25182857142858 83.97142857142858Z" fill="#FF9A63"/></svg></div>
+  </div>
+  <div class="demo">
+    <div>
+      <h3>Icon sizes</h3>
+      <div class="mx"><span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="Mercury"><g transform="translate(0 0) scale(1)">
+<defs><clipPath id="g4"><circle cx="50" cy="50" r="46"/></clipPath></defs>
+<circle cx="50" cy="50" r="46" fill="#8E877F"/>
+<circle cx="44" cy="44" r="37" fill="#C9C2B9" clip-path="url(#g4)"/>
+<g fill="#A9A198">
+<circle cx="31" cy="38" r="8"/><circle cx="60" cy="29" r="5.5"/><circle cx="62" cy="60" r="9.5"/>
+<circle cx="35" cy="67" r="5.5"/><circle cx="74" cy="42" r="3.5"/>
+</g>
+<g fill="#B8B0A6"><circle cx="29" cy="36" r="3.2"/><circle cx="59" cy="27.5" r="2.2"/><circle cx="60" cy="57.5" r="3.8"/></g>
+</g></svg></span><span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><g transform="translate(2 2) scale(0.6)">
+<defs><clipPath id="g5"><circle cx="50" cy="50" r="46"/></clipPath></defs>
+<circle cx="50" cy="50" r="46" fill="#8E877F"/>
+<circle cx="44" cy="44" r="37" fill="#C9C2B9" clip-path="url(#g5)"/>
+<g fill="#A9A198">
+<circle cx="31" cy="38" r="8"/><circle cx="60" cy="29" r="5.5"/><circle cx="62" cy="60" r="9.5"/>
+<circle cx="35" cy="67" r="5.5"/><circle cx="74" cy="42" r="3.5"/>
+</g>
+<g fill="#B8B0A6"><circle cx="29" cy="36" r="3.2"/><circle cx="59" cy="27.5" r="2.2"/><circle cx="60" cy="57.5" r="3.8"/></g>
+</g><circle cx="46" cy="46" r="16.5" fill="#C2410C" stroke="#FFFFFF" stroke-width="2.5"/><path transform="translate(37.23 46.00)" d="M1.0842857142857143 5.5V-4.871428571428572H5.5Q6.364285714285715 -4.871428571428572 7.071428571428572 -4.737857142857143Q7.778571428571429 -4.604285714285714 8.320714285714287 -4.345000000000001Q8.862857142857143 -4.085714285714287 9.24 -3.7164285714285725Q9.617142857142857 -3.347142857142858 9.805714285714286 -2.8678571428571433Q9.994285714285715 -2.388571428571429 9.994285714285715 -1.8071428571428578Q9.994285714285715 -1.257142857142858 9.821428571428573 -0.8171428571428576Q9.64857142857143 -0.3771428571428572 9.295000000000002 -0.04714285714285715Q8.941428571428572 0.2828571428571429 8.407142857142858 0.4871428571428571Q7.872857142857144 0.6914285714285713 7.165714285714286 0.7857142857142856V1.0214285714285714Q8.061428571428571 1.1157142857142857 8.556428571428572 1.422142857142857Q9.051428571428572 1.7285714285714282 9.31857142857143 2.2314285714285713Q9.585714285714287 2.734285714285714 9.790000000000001 3.4414285714285713L10.387142857142857 5.5H7.574285714285715L7.118571428571429 3.5985714285714288Q6.977142857142858 2.9699999999999998 6.7335714285714285 2.624285714285714Q6.49 2.2785714285714285 6.112857142857143 2.1449999999999996Q5.735714285714286 2.011428571428571 5.17 2.011428571428571H3.6142857142857143V5.5ZM3.6142857142857143 0.14142857142857146H5.327142857142857Q6.2857142857142865 0.14142857142857146 6.82 -0.23571428571428577Q7.354285714285715 -0.612857142857143 7.354285714285715 -1.4142857142857146Q7.354285714285715 -2.2 6.867142857142857 -2.577142857142858Q6.380000000000001 -2.9542857142857155 5.390000000000001 -2.9542857142857155H3.6142857142857143Z" fill="#FFFFFF"/><path transform="translate(37.23 46.00)" d="M10.47482857142857 6.442857142857143 12.607571428571429 3.2069714285714284 10.487085714285714 -0.028914285714286336H12.754657142857143L13.821028571428572 2.348971428571428H14.053914285714287L15.120285714285714 -0.028914285714286336H17.387857142857143L15.255114285714285 3.2069714285714284L17.400114285714288 6.442857142857143H15.1448L14.053914285714287 4.040457142857143H13.821028571428572L12.754657142857143 6.442857142857143Z" fill="#FFFFFF"/></svg></span></div>
+      <p class="muted">Planet alone for avatars and in-page marks. Planet with the Rx badge for favicon, home-screen and app icons.</p>
+    </div>
+    <div>
+      <h3>Clear space and minimum size</h3>
+      <div class="sizes"><span class="clear"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 210 100" role="img" aria-label="Mercury Rx"><g transform="translate(0 0) scale(1)">
+<defs><clipPath id="g1"><circle cx="50" cy="50" r="46"/></clipPath></defs>
+<circle cx="50" cy="50" r="46" fill="#8E877F"/>
+<circle cx="44" cy="44" r="37" fill="#C9C2B9" clip-path="url(#g1)"/>
+<g fill="#A9A198">
+<circle cx="31" cy="38" r="8"/><circle cx="60" cy="29" r="5.5"/><circle cx="62" cy="60" r="9.5"/>
+<circle cx="35" cy="67" r="5.5"/><circle cx="74" cy="42" r="3.5"/>
+</g>
+<g fill="#B8B0A6"><circle cx="29" cy="36" r="3.2"/><circle cx="59" cy="27.5" r="2.2"/><circle cx="60" cy="57.5" r="3.8"/></g>
+</g><path d="M119.71714285714286 79.0V24.31428571428571H143.0Q147.55714285714285 24.31428571428571 151.28571428571428 25.018571428571423Q155.01428571428573 25.722857142857137 157.87285714285716 27.089999999999996Q160.73142857142858 28.457142857142856 162.72 30.40428571428571Q164.70857142857142 32.35142857142856 165.70285714285714 34.87857142857142Q166.69714285714286 37.40571428571428 166.69714285714286 40.47142857142857Q166.69714285714286 43.37142857142857 165.78571428571428 45.69142857142857Q164.87428571428572 48.01142857142857 163.01 49.75142857142857Q161.1457142857143 51.49142857142857 158.32857142857142 52.56857142857143Q155.51142857142858 53.645714285714284 151.78285714285715 54.14285714285714V55.385714285714286Q156.5057142857143 55.88285714285714 159.1157142857143 57.498571428571424Q161.72571428571428 59.114285714285714 163.1342857142857 61.76571428571429Q164.54285714285714 64.41714285714286 165.62 68.14571428571429L168.76857142857142 79.0H153.93714285714287L151.53428571428572 68.97428571428571Q150.78857142857143 65.66 149.50428571428571 63.83714285714285Q148.22 62.01428571428571 146.23142857142858 61.31Q144.24285714285713 60.605714285714285 141.26 60.605714285714285H133.05714285714285V79.0ZM133.05714285714285 50.745714285714286H142.08857142857144Q147.14285714285714 50.745714285714286 149.95999999999998 48.75714285714285Q152.77714285714285 46.76857142857143 152.77714285714285 42.54285714285714Q152.77714285714285 38.4 150.20857142857142 36.41142857142857Q147.64 34.42285714285714 142.42000000000002 34.42285714285714H133.05714285714285Z" fill="var(--fg)"/><path d="M169.2309142857143 83.97142857142858 180.47628571428572 66.90948571428572 169.29554285714286 49.847542857142855H181.25182857142858L186.8745142857143 62.385485714285714H188.10245714285716L193.72514285714288 49.847542857142855H205.6814285714286L194.43605714285715 66.90948571428572L205.74605714285715 83.97142857142858H193.8544L188.10245714285716 71.30422857142858H186.8745142857143L181.25182857142858 83.97142857142858Z" fill="var(--yes)"/></svg></span></div>
+      <p class="muted">Keep clear space of half the logo height on every side (the dashed box). Smallest sizes: lockup 80px wide, planet 16px, badge icon 16px.</p>
+    </div>
+  </div>
+  <h3>Rules</h3>
+  <p>Use <code>assets/logo.svg</code> on light backgrounds and <code>assets/logo-dark.svg</code> on dark ones. Don’t recolor the planet, set the Rx in another typeface, stack the lockup, or put it on a busy or low-contrast background.</p>
 
   <h2>Color</h2>
-  <p class="muted">Themes swap by setting <code>data-state</code> on <code>&lt;html&gt;</code>. Use the semantic tokens in components; raw palette values are for building the tokens only.</p>
-  <h3>Semantic tokens (current state)</h3>
-  <div class="swatches">
-    <div class="sw"><i style="background:var(--bg);border-bottom:2px solid var(--line)"></i><b>--bg</b><span>Page</span></div>
-    <div class="sw"><i style="background:var(--surface);border-bottom:2px solid var(--line)"></i><b>--surface</b><span>Cards</span></div>
-    <div class="sw"><i style="background:var(--text)"></i><b>--text</b><span>Body, headings</span></div>
-    <div class="sw"><i style="background:var(--text-muted)"></i><b>--text-muted</b><span>Secondary text</span></div>
-    <div class="sw"><i style="background:var(--accent)"></i><b>--accent</b><span>The answer, focus ring</span></div>
-    <div class="sw"><i style="background:var(--line)"></i><b>--line</b><span>Borders</span></div>
+  <p class="muted">Semantic tokens switch with the theme and the answer state. Use these in components, not raw hex.</p>
+  <div class="grid">
+    <div class="sw"><i style="background:var(--bg)"></i><b>--bg</b><span>Page</span></div>
+    <div class="sw"><i style="background:var(--panel)"></i><b>--panel</b><span>Cards, tab bar</span></div>
+    <div class="sw"><i style="background:var(--fg)"></i><b>--fg</b><span>Text</span></div>
+    <div class="sw"><i style="background:var(--muted)"></i><b>--muted</b><span>Secondary text</span></div>
+    <div class="sw"><i style="background:var(--line)"></i><b>--line</b><span>Borders, dividers</span></div>
+    <div class="sw"><i style="background:var(--state)"></i><b>--state</b><span>Answer, active tab</span></div>
+    <div class="sw"><i style="background:var(--state-bg)"></i><b>--state-bg</b><span>Verdict card</span></div>
   </div>
-  <h3>Palette</h3>
-  <div class="swatches">
-    <div class="sw"><i style="background:#12154f"></i><b>Ultramarine 900</b><span>#12154f · ink</span></div>
-    <div class="sw"><i style="background:#1a1f6b"></i><b>Ultramarine 800</b><span>#1a1f6b · Yes page</span></div>
-    <div class="sw"><i style="background:#e9eeff"></i><b>Daybreak 100</b><span>#e9eeff · No page</span></div>
-    <div class="sw"><i style="background:#ffe3f2"></i><b>Orchid 100</b><span>#ffe3f2 · Yes text</span></div>
-    <div class="sw"><i style="background:#ff5fa2"></i><b>Signal 500</b><span>#ff5fa2 · Yes answer</span></div>
-    <div class="sw"><i style="background:#1b7f6d"></i><b>Clear 600</b><span>#1b7f6d · No answer</span></div>
-    <div class="sw"><i style="background:#b8795a"></i><b>Copper 500</b><span>#b8795a · Mercury, once per page</span></div>
-  </div>
+  <table>
+    <tr><th>Token</th><th>Light</th><th>Dark</th></tr>
+    <tr><td>--bg</td><td>#EAEFF5</td><td>#0B1220</td></tr>
+    <tr><td>--panel</td><td>#F7F9FC</td><td>#121B2D</td></tr>
+    <tr><td>--fg</td><td>#0F1A2E</td><td>#E7ECF5</td></tr>
+    <tr><td>--muted</td><td>#55627A</td><td>#9AA7BF</td></tr>
+    <tr><td>--line</td><td>#CBD4E2</td><td>#26324A</td></tr>
+    <tr><td>--yes / --yes-bg</td><td>#C2410C / #FBE4D6</td><td>#FF9A63 / #2B1A12</td></tr>
+    <tr><td>--no / --no-bg</td><td>#0F766E / #D5EEEA</td><td>#5EE0C4 / #0F2A27</td></tr>
+  </table>
+  <p class="muted">The answer color is used for large text, tags and the active tab only; body text is always <code>--fg</code> or <code>--muted</code>.</p>
 
   <h2>Typography</h2>
-  <div class="cols">
+  <div class="demo">
     <div>
-      <h3 style="margin-top:var(--space-5)">Bricolage Grotesque</h3>
-      <p class="muted">Display and headings. The answer uses weight 800 at 75% width; headings use 600–700 at 100%.</p>
-      <p style="font:800 5rem/0.85 var(--font-display);font-stretch:75%;letter-spacing:-0.03em;color:var(--accent);margin-top:var(--space-4)">Yes. No.</p>
+      <h3 style="margin-top:0">Bricolage Grotesque</h3>
+      <p class="muted">Display and body. The answer is weight 800, line-height 0.86, tracking −0.035em.</p>
+      <p style="font:800 4.5rem/.9 var(--display);letter-spacing:-.035em;color:var(--state);margin-top:10px">NO YES</p>
     </div>
     <div>
-      <h3 style="margin-top:var(--space-5)">Instrument Sans</h3>
-      <p class="muted">Body, UI and captions. Weights 400, 500 and 600.</p>
-      <p style="margin-top:var(--space-4)">Mercury appears to move backwards a few times a year. It is an optical effect of the planets’ orbits.</p>
+      <h3 style="margin-top:0">JetBrains Mono</h3>
+      <p class="muted">Dates, readings, labels and tags. Tabular numbers. Labels are uppercase with +0.08em tracking.</p>
+      <p style="font:500 1rem/1.4 var(--mono);margin-top:10px">12 Nov 2026 · −0.62°/day</p>
     </div>
   </div>
   <table>
-    <tr><th>Role</th><th>Token</th><th>Size</th><th>Weight</th><th>Line height</th></tr>
-    <tr><td>Answer</td><td><code>--text-answer</code></td><td>7rem – 26rem</td><td>800 / 75% width</td><td>0.82</td></tr>
-    <tr><td>Heading 1</td><td><code>--text-h1</code></td><td>2 – 3.5rem</td><td>700</td><td>1.1</td></tr>
-    <tr><td>Heading 2</td><td><code>--text-h2</code></td><td>1.5 – 2rem</td><td>650</td><td>1.1</td></tr>
-    <tr><td>Heading 3</td><td><code>--text-h3</code></td><td>1.25rem</td><td>600</td><td>1.1</td></tr>
-    <tr><td>Body</td><td><code>--text-body</code></td><td>1.0625rem</td><td>400</td><td>1.55</td></tr>
-    <tr><td>Small</td><td><code>--text-small</code></td><td>0.875rem</td><td>400–600</td><td>1.55</td></tr>
+    <tr><th>Role</th><th>Size</th><th>Style</th></tr>
+    <tr><td>Answer</td><td>6.5 – 11rem</td><td>800 / 0.86</td></tr>
+    <tr><td>Page title</td><td>2 – 2.6rem</td><td>800 / 1.02</td></tr>
+    <tr><td>Section title</td><td>1.3rem</td><td>700 / 1.25</td></tr>
+    <tr><td>Body</td><td>1rem</td><td>400 / 1.5, max 65ch</td></tr>
+    <tr><td>Label</td><td>0.78rem</td><td>mono 700, uppercase</td></tr>
+    <tr><td>Data</td><td>0.92rem</td><td>mono 500, tabular</td></tr>
   </table>
-  <p class="muted">Keep text under 60 characters wide (<code>--measure</code>). Use sentence case everywhere except the answer.</p>
 
-  <h2>Space and shape</h2>
-  <p>A 4px base. Components use steps 2–6; sections use 8–9.</p>
-  <table>
-    <tr><td><code>--space-1</code></td><td><span class="spacebar" style="width:4px"></span>4px</td><td><code>--space-5</code></td><td><span class="spacebar" style="width:24px"></span>24px</td></tr>
-    <tr><td><code>--space-2</code></td><td><span class="spacebar" style="width:8px"></span>8px</td><td><code>--space-6</code></td><td><span class="spacebar" style="width:32px"></span>32px</td></tr>
-    <tr><td><code>--space-3</code></td><td><span class="spacebar" style="width:12px"></span>12px</td><td><code>--space-7</code></td><td><span class="spacebar" style="width:48px"></span>48px</td></tr>
-    <tr><td><code>--space-4</code></td><td><span class="spacebar" style="width:16px"></span>16px</td><td><code>--space-8</code></td><td><span class="spacebar" style="width:72px"></span>72px</td></tr>
-  </table>
-  <p class="muted">Two radii only: 6px for controls and cards, a full pill for the status label. Borders are 2px. No shadows; depth comes from the surface color.</p>
+  <h2>Shape and space</h2>
+  <p>One 460px column, 20px between blocks. Radius shrinks with importance: verdict 22, panel 16, stat 14, tab 12, control 10, tag 6, chip and button pill. Borders are 1px <code>--line</code>. No shadows. Every control is at least 44px tall.</p>
 
   <h2>Components</h2>
-  <div class="row">
-    <button class="btn" type="button">Copy link</button>
-    <button class="btn secondary" type="button">Show next retrograde</button>
-    <span class="pill">Retrograde until 12 Nov</span>
-  </div>
-  <div class="row">
-    <div class="card">
-      <h3 style="margin-top:0">Next retrograde</h3>
-      <p>Starts and ends dates sit here, in body text, with the year included.</p>
+  <p class="muted">All dates, readings and copy below are sample content, not live data.</p>
+  <div class="demo">
+    <div class="frame stack">
+      <section class="verdict" aria-label="Verdict">
+        <h4>Is Mercury in retrograde?</h4>
+        <p class="answer" id="ans">NO</p>
+        <p class="line" id="ln">Mercury is moving direct.</p>
+        <p class="sub">Sample copy</p>
+      </section>
+      <a class="coffee" href="#">☕ Buy me a coffee</a>
+      <section class="panel"><h5>Mercury right now</h5>
+        <dl>
+          <div class="row"><dt>Date checked</dt><dd>29 Oct 2026</dd></div>
+          <div class="row"><dt>Apparent motion</dt><dd>−0.62°/day</dd></div>
+        </dl></section>
+      <section class="panel"><h5>Retrograde periods</h5>
+        <ul class="windows">
+          <li><div class="w-top"><span class="w-dates">24 Oct – 13 Nov<span class="now-tag">now</span></span><span class="w-len">21 days</span></div></li>
+          <li><div class="w-top"><span class="w-dates">26 Feb – 20 Mar</span><span class="w-len">23 days</span></div></li>
+        </ul></section>
+    </div>
+    <div class="frame stack">
+      <section class="panel"><h5>Check another date</h5>
+        <div class="ctl"><button type="button" aria-label="Previous day">&lsaquo;</button><input type="date" aria-label="Date to check"><button type="button" aria-label="Next day">&rsaquo;</button><button type="button">Today</button></div></section>
+      <div class="stats"><div class="stat"><b>3–4</b><span>retrogrades a year</span></div><div class="stat"><b>~21</b><span>days each, on average</span></div></div>
+      <div class="callout"><p>Callouts use the verdict tint for a single important note.</p></div>
+      <div><a class="chip yes" href="#"><i></i>Retrograde now</a> <a class="chip no" href="#"><i></i>Moving direct</a></div>
+      <section class="panel"><h5>Apparent speed, °/day</h5>
+        <svg class="chart" viewBox="0 0 300 110" role="img" aria-label="Sample chart"><line class="g-grid" x1="0" x2="300" y1="20" y2="20"/><line class="g-zero" x1="0" x2="300" y1="60" y2="60"/><line class="g-grid" x1="0" x2="300" y1="100" y2="100"/>
+        <path class="g-retro-area" d="M120,60 C135,92 165,92 180,60 Z"/><path class="g-line" d="M0,28 C40,18 80,34 120,60 C135,92 165,92 180,60 C220,30 260,18 300,26"/><path class="g-retro-line" d="M120,60 C135,92 165,92 180,60"/><text class="g-text" x="4" y="14">+2</text><text class="g-text" x="4" y="74">0</text></svg></section>
+      <nav class="tabs" aria-label="Pages (example)"><div class="tabs-in">
+        <a href="#" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="2.5"/></svg><span>Today</span></a>
+        <a href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></svg><span>Dates</span></a>
+        <a href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="12" rx="9" ry="4"/><ellipse cx="12" cy="12" rx="9" ry="4" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="9" ry="4" transform="rotate(120 12 12)"/></svg><span>Science</span></a>
+        <a href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.6 5.6 6.1.7-4.5 4.2 1.2 6L12 16.5 6.6 19.5l1.2-6L3.3 9.3l6.1-.7z"/></svg><span>Astrology</span></a>
+        <a href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 12.5l3 3 5-6"/></svg><span>Tips</span></a>
+      </div></nav>
     </div>
   </div>
-  <p class="muted">Buttons say what they do (“Copy link”, not “Submit”). The sample date above is placeholder content.</p>
 
-  <h2>Motion</h2>
-  <p>One animation: on load the loop line draws itself over 1.6 seconds. The preview toggle above replays it. UI responses (button press, theme swap) take 140ms. With reduced motion, both are instant.</p>
+  <h2>Motion and access</h2>
+  <p>No decorative animation. Buttons move 1px when pressed, and not at all with reduced motion. Focus shows a 2px outline in the state color. Answers are announced (<code>role="status"</code>), and state never relies on color alone: the word YES or NO always shows.</p>
 
   <h2>Voice</h2>
-  <p>Answer first, then facts. Plain verbs, no horoscope language, no jokes at the visitor’s expense. “Mercury is retrograde until 12 November” beats “Mercury is feeling reflective”.</p>
+  <p>Answer first, then facts. Plain verbs, no horoscope language. Say what a control does: “Buy me a coffee”, “Today”.</p>
 
   <h2>Assets</h2>
   <table>
-    <tr><td><code>assets/favicon.svg</code></td><td>Mark, 64×64, any size</td></tr>
-    <tr><td><code>assets/apple-touch-icon.png</code></td><td>180×180</td></tr>
-    <tr><td><code>assets/og-image.png</code></td><td>Open Graph, 1200×630</td></tr>
-    <tr><td><code>assets/twitter-card.png</code></td><td>Twitter / X large card, 1200×600</td></tr>
-    <tr><td><code>head.html</code></td><td>Metadata to paste into the site’s <code>&lt;head&gt;</code></td></tr>
+    <tr><th>File</th><th>Use</th><th>Size</th></tr>
+    <tr><td>assets/logo.svg</td><td>Lockup on light</td><td>vector</td></tr>
+    <tr><td>assets/logo-dark.svg</td><td>Lockup on dark</td><td>vector</td></tr>
+    <tr><td>assets/logo-icon.svg</td><td>Planet only</td><td>vector</td></tr>
+    <tr><td>assets/favicon.svg</td><td>Favicon (planet + Rx badge)</td><td>vector</td></tr>
+    <tr><td>assets/apple-touch-icon.png</td><td>iOS home screen</td><td>180×180</td></tr>
+    <tr><td>assets/icon-192.png, icon-512.png</td><td>Web app manifest</td><td>192, 512</td></tr>
+    <tr><td>assets/og-image.png</td><td>Open Graph</td><td>1200×630</td></tr>
+    <tr><td>assets/twitter-card.png</td><td>Twitter / X large card</td><td>1200×600</td></tr>
   </table>
 </main>
 <script>
 (function(){
-  var root=document.documentElement, ans=document.getElementById('answer'), loop=document.getElementById('loop');
-  document.querySelectorAll('[data-set]').forEach(function(b){
-    b.addEventListener('click',function(){
-      var s=b.getAttribute('data-set');
-      root.setAttribute('data-state',s);
-      ans.textContent=s==='retrograde'?'YES':'NO';
-      document.querySelectorAll('[data-set]').forEach(function(x){x.setAttribute('aria-pressed',x===b)});
-      loop.classList.remove('draw'); void loop.getBoundingClientRect(); loop.classList.add('draw');
-    });
-  });
+  var body=document.body, root=document.documentElement, ans=document.getElementById('ans'), ln=document.getElementById('ln');
+  function press(sel,val,attr){document.querySelectorAll(sel).forEach(function(b){b.setAttribute('aria-pressed',b.getAttribute(attr)===val)})}
+  document.querySelectorAll('[data-state-set]').forEach(function(b){b.addEventListener('click',function(){
+    var s=b.getAttribute('data-state-set'); body.setAttribute('data-state',s);
+    ans.textContent=s==='yes'?'YES':'NO'; ln.textContent=s==='yes'?'Mercury is moving backwards.':'Mercury is moving direct.';
+    press('[data-state-set]',s,'data-state-set');});});
+  document.querySelectorAll('[data-theme-set]').forEach(function(b){b.addEventListener('click',function(){
+    var t=b.getAttribute('data-theme-set'); root.setAttribute('data-theme',t); press('[data-theme-set]',t,'data-theme-set');});});
 })();
 </script>
 </body>

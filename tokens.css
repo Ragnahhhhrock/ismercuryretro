@@ -1,94 +1,82 @@
-/* ismercuryretro.com — design tokens ("Transit")
-   The page has two states, set on <html data-state="direct|retrograde">.
-   NO  = Mercury is moving direct  -> "Daybreak" light theme
-   YES = Mercury is retrograde     -> "Transit" dark theme  */
+/* ismercuryretro.com — design tokens
+   These mirror the live site's CSS (index.html). Change them here and in index.html together.
+
+   Theme: light by default, dark via prefers-color-scheme or <html data-theme="dark">.
+   Answer state: put data-state="yes" or data-state="no" on the element that wraps the page
+   (the live site uses <main class="wrap" data-state="no">). It sets --state and --state-bg. */
 
 @font-face {
   font-family: "Bricolage Grotesque";
   src: url("fonts/bricolage-grotesque.woff2") format("woff2");
   font-weight: 200 800;
-  font-stretch: 75% 100%;
   font-display: swap;
 }
 @font-face {
-  font-family: "Instrument Sans";
-  src: url("fonts/instrument-sans.woff2") format("woff2");
-  font-weight: 400 700;
-  font-stretch: 75% 100%;
+  font-family: "JetBrains Mono";
+  src: url("fonts/jetbrains-mono.woff2") format("woff2");
+  font-weight: 100 800;
   font-display: swap;
 }
 
 :root {
-  /* ---- Palette (raw) ---- */
-  --ultramarine-900: #12154f;   /* deepest ink */
-  --ultramarine-800: #1a1f6b;   /* Transit background */
-  --ultramarine-600: #3a42b8;   /* links on light */
-  --daybreak-50:     #f4f6ff;   /* raised surface on light */
-  --daybreak-100:    #e9eeff;   /* Daybreak background */
-  --daybreak-300:    #b9c4f2;   /* hairlines on light */
-  --orchid-100:      #ffe3f2;   /* Transit text */
-  --orchid-300:      #d9a6c6;   /* Transit secondary text */
-  --signal-500:      #ff5fa2;   /* retrograde signal */
-  --clear-600:       #1b7f6d;   /* direct / clear */
-  --copper-500:      #b8795a;   /* Mercury itself, used once per page */
+  /* ---- Color: light ---- */
+  --bg: #EAEFF5;       /* page */
+  --panel: #F7F9FC;    /* cards, tab bar */
+  --fg: #0F1A2E;       /* text */
+  --muted: #55627A;    /* secondary text, chart lines */
+  --line: #CBD4E2;     /* borders, dividers */
+  --yes: #C2410C;      /* retrograde: burnt orange */
+  --yes-bg: #FBE4D6;
+  --no: #0F766E;       /* direct: teal */
+  --no-bg: #D5EEEA;
 
   /* ---- Type ---- */
-  --font-display: "Bricolage Grotesque", "Arial Narrow", system-ui, sans-serif;
-  --font-body: "Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --display: "Bricolage Grotesque", "Helvetica Neue", Arial, sans-serif;
+  --body: "Bricolage Grotesque", "Helvetica Neue", Arial, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
 
-  --text-answer: clamp(7rem, 34vw, 26rem);  /* YES / NO */
-  --text-h1: clamp(2rem, 5vw, 3.5rem);
-  --text-h2: clamp(1.5rem, 3vw, 2rem);
-  --text-h3: 1.25rem;
-  --text-body: 1.0625rem;   /* 17px */
-  --text-small: 0.875rem;
-  --leading-tight: 0.82;    /* answer only */
-  --leading-heading: 1.1;
-  --leading-body: 1.55;
-  --measure: 60ch;
+  --text-answer: clamp(6.5rem, 36vw, 11rem);  /* YES / NO, weight 800, line-height 0.86, tracking -0.035em */
+  --text-page-title: clamp(2rem, 9vw, 2.6rem);  /* weight 800, line-height 1.02, tracking -0.02em */
+  --text-section: 1.3rem;                       /* prose h3, weight 700 */
+  --text-verdict-q: 1.1rem;                     /* the question above the answer, weight 600 */
+  --text-lede: 1.1rem;
+  --text-body: 1rem;                            /* 16px / 1.5 */
+  --text-small: 0.85rem;
+  --text-label: 0.78rem;                        /* mono, uppercase, +0.08em, weight 700 */
+  --text-data: 0.92rem;                         /* mono, tabular numbers */
+  --measure: 65ch;
 
-  /* ---- Space (4px base) ---- */
-  --space-1: 4px;  --space-2: 8px;  --space-3: 12px; --space-4: 16px;
-  --space-5: 24px; --space-6: 32px; --space-7: 48px; --space-8: 72px; --space-9: 112px;
-  --gutter: 16px;
+  /* ---- Layout ---- */
+  --column: 460px;        /* one narrow column, centred */
+  --gap-page: 20px;       /* between blocks */
+  --pad-panel: 14px;
+  --pad-verdict: 20px;
+  --tap: 44px;            /* minimum control height */
+  --tab-height: 56px;
 
-  /* ---- Shape ---- */
-  --radius-control: 6px;   /* buttons, inputs */
-  --radius-pill: 999px;    /* status pill only */
-  --border-w: 2px;
-  --focus-ring: 3px;
-
-  /* ---- Motion ---- */
-  --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
-  --dur-draw: 1600ms;      /* the one load animation: the loop draws itself */
-  --dur-ui: 140ms;         /* responses to a person's action */
+  /* ---- Shape (radius scale, largest to smallest) ---- */
+  --r-verdict: 22px;
+  --r-panel: 16px;
+  --r-stat: 14px;
+  --r-tab: 12px;
+  --r-control: 10px;
+  --r-tag: 6px;
+  --r-pill: 999px;
+  --border: 1px solid var(--line);   /* no shadows anywhere */
 }
 
-/* ---- State: NO (direct) ---- */
-:root,
-:root[data-state="direct"] {
-  --bg: var(--daybreak-100);
-  --surface: var(--daybreak-50);
-  --text: var(--ultramarine-900);
-  --text-muted: #4a5088;           /* 6.5:1 on --bg */
-  --line: var(--daybreak-300);
-  --accent: var(--clear-600);      /* 4.2:1 on --bg: large text and UI only */
-  --link: var(--ultramarine-600);
-  --on-accent: #ffffff;
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0B1220; --panel: #121B2D; --fg: #E7ECF5; --muted: #9AA7BF; --line: #26324A;
+    --yes: #FF9A63; --yes-bg: #2B1A12; --no: #5EE0C4; --no-bg: #0F2A27;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0B1220; --panel: #121B2D; --fg: #E7ECF5; --muted: #9AA7BF; --line: #26324A;
+  --yes: #FF9A63; --yes-bg: #2B1A12; --no: #5EE0C4; --no-bg: #0F2A27;
+  color-scheme: dark;
 }
 
-/* ---- State: YES (retrograde) ---- */
-:root[data-state="retrograde"] {
-  --bg: var(--ultramarine-800);
-  --surface: #232985;
-  --text: var(--orchid-100);
-  --text-muted: var(--orchid-300); /* 7.0:1 on --bg */
-  --line: #3b429c;
-  --accent: var(--signal-500);     /* 5.1:1 on --bg */
-  --link: var(--signal-500);
-  --on-accent: var(--ultramarine-900);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  :root { --dur-draw: 0ms; --dur-ui: 0ms; }
-}
+[data-state="yes"] { --state: var(--yes); --state-bg: var(--yes-bg); }
+[data-state="no"]  { --state: var(--no);  --state-bg: var(--no-bg); }
