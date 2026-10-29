@@ -667,4 +667,19 @@ renderDates();
 renderAstro(nowStatus);
 renderTips();
 route();
+
+/* ---------- Google Analytics events ---------- */
+function track(name, params) { try { if (typeof gtag === 'function') gtag('event', name, params || {}); } catch (e) {} }
+track('tab_view', { tab_name: page });
+window.addEventListener('hashchange', () => track('tab_view', { tab_name: page }));
+[['prev', 'previous_day'], ['next', 'next_day'], ['today', 'today']].forEach(p =>
+  $(p[0]).addEventListener('click', () => track('date_change', { method: p[1] })));
+$('date').addEventListener('change', () => track('date_change', { method: 'date_picker' }));
+$('y-prev').addEventListener('click', () => track('year_change', { direction: 'previous', year: calYear }));
+$('y-next').addEventListener('click', () => track('year_change', { direction: 'next', year: calYear }));
+$('checks').addEventListener('change', e => { if (e.target.dataset.k) track('tip_toggle', { tip_id: e.target.dataset.k, checked: e.target.checked }); });
+$('clear').addEventListener('click', () => track('tips_clear'));
+document.querySelector('.coffee').addEventListener('click', () => track('coffee_click'));
+document.querySelectorAll('a[href^="mailto:"]').forEach(a => a.addEventListener('click', () => track('contact_click')));
+document.querySelectorAll('a[href="https://malgordon.com"]').forEach(a => a.addEventListener('click', () => track('creator_link_click')));
 </script>
