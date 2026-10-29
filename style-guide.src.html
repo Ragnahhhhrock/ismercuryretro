@@ -118,7 +118,7 @@ dl{margin:6px 0 0}
   <p>The answer is the page. One word, set huge, in the color of its state: burnt orange for yes, teal for no. Everything else is quiet, narrow and legible: a single 460px column, soft panels, monospace for data.</p>
 
   <h2>Logo</h2>
-  <p>A flat, emoji-style Mercury next to <b>Rx</b>, the astrologers’ mark for retrograde. The R is the page’s ink color; the x is the retrograde orange.</p>
+  <p>The Mercury symbol ☿ in the page’s ink color next to ℞, the astrologers’ symbol for retrograde (an R with a crossed leg), in retrograde orange.</p>
   <div class="demo">
     <div class="lg on-light">{{LOGO_ON_LIGHT}}</div>
     <div class="lg on-dark">{{LOGO_ON_DARK}}</div>
@@ -126,17 +126,17 @@ dl{margin:6px 0 0}
   <div class="demo">
     <div>
       <h3>Icon sizes</h3>
-      <div class="mx"><span>{{LOGO_ICON}}</span><span>{{LOGO_BADGE}}</span></div>
-      <p class="muted">Planet alone for avatars and in-page marks. Planet with the Rx badge for favicon, home-screen and app icons.</p>
+      <div class="mx"><span>{{LOGO_ICON}}</span><span>{{LOGO_TILE}}</span><span style="display:inline-flex;align-items:center;height:64px">{{LOGO_GLYPH}}</span></div>
+      <p class="muted">The ☿ alone for avatars and in-page marks. White ℞ on an orange tile for favicon, home-screen and app icons. The bare glyph for small in-page marks.</p>
     </div>
     <div>
       <h3>Clear space and minimum size</h3>
       <div class="sizes"><span class="clear">{{LOGO_THEMED}}</span></div>
-      <p class="muted">Keep clear space of half the logo height on every side (the dashed box). Smallest sizes: lockup 80px wide, planet 16px, badge icon 16px.</p>
+      <p class="muted">Keep clear space of half the logo height on every side (the dashed box). Smallest sizes: lockup 80px wide, ☿ 16px tall, tile 16px, bare ℞ 12px tall.</p>
     </div>
   </div>
   <h3>Rules</h3>
-  <p>Use <code>assets/logo.svg</code> on light backgrounds and <code>assets/logo-dark.svg</code> on dark ones. Don’t recolor the planet, set the Rx in another typeface, stack the lockup, or put it on a busy or low-contrast background.</p>
+  <p>Use <code>assets/logo.svg</code> on light backgrounds and <code>assets/logo-dark.svg</code> on dark ones. Don’t recolor the glyphs, redraw or retype them, stack the lockup, or put it on a busy or low-contrast background. The bare ℞ is always retrograde orange (<code>--yes</code>) or white on orange.</p>
 
   <h2>Color</h2>
   <p class="muted">Semantic tokens switch with the theme and the answer state. Use these in components, not raw hex.</p>
@@ -239,8 +239,9 @@ dl{margin:6px 0 0}
     <tr><th>File</th><th>Use</th><th>Size</th></tr>
     <tr><td>assets/logo.svg</td><td>Lockup on light</td><td>vector</td></tr>
     <tr><td>assets/logo-dark.svg</td><td>Lockup on dark</td><td>vector</td></tr>
-    <tr><td>assets/logo-icon.svg</td><td>Planet only</td><td>vector</td></tr>
-    <tr><td>assets/favicon.svg</td><td>Favicon (planet + Rx badge)</td><td>vector</td></tr>
+    <tr><td>assets/logo-icon.svg, logo-icon-dark.svg</td><td>☿ alone</td><td>vector</td></tr>
+    <tr><td>assets/logo-glyph.svg, logo-glyph-dark.svg</td><td>℞ glyph alone</td><td>vector</td></tr>
+    <tr><td>assets/favicon.svg</td><td>Favicon (white ℞ on orange tile)</td><td>vector</td></tr>
     <tr><td>assets/apple-touch-icon.png</td><td>iOS home screen</td><td>180×180</td></tr>
     <tr><td>assets/icon-192.png, icon-512.png</td><td>Web app manifest</td><td>192, 512</td></tr>
     <tr><td>assets/og-image.png</td><td>Open Graph</td><td>1200×630</td></tr>

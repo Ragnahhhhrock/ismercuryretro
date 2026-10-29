@@ -27,58 +27,61 @@ def glyph(ch, size, x, baseline):
     gs[cmap[ord(ch)]].draw(TransformPen(pen, (s, 0, 0, -s, x, baseline)))
     return pen.getCommands(), gs[cmap[ord(ch)]].width * s
 
-# ---- Planet: a flat, emoji-style Mercury in a 100x100 box ----
-def planet(ox=0, oy=0, k=1.0, uid="p"):
-    t = f'transform="translate({ox} {oy}) scale({k})"'
-    return f'''<g {t}>
-<defs><clipPath id="{uid}"><circle cx="50" cy="50" r="46"/></clipPath></defs>
-<circle cx="50" cy="50" r="46" fill="#8E877F"/>
-<circle cx="44" cy="44" r="37" fill="#C9C2B9" clip-path="url(#{uid})"/>
-<g fill="#A9A198">
-<circle cx="31" cy="38" r="8"/><circle cx="60" cy="29" r="5.5"/><circle cx="62" cy="60" r="9.5"/>
-<circle cx="35" cy="67" r="5.5"/><circle cx="74" cy="42" r="3.5"/>
-</g>
-<g fill="#B8B0A6"><circle cx="29" cy="36" r="3.2"/><circle cx="59" cy="27.5" r="2.2"/><circle cx="60" cy="57.5" r="3.8"/></g>
-</g>'''
+_gw, _gd = (root / "assets/rx-glyph.txt").read_text().split("\n")[:2]
+GLYPH_W, GLYPH_D = float(_gw), _gd
 
-def rx(x, cy, cap, fg, xcol):
-    """'Rx' with cap-height `cap`, vertically centred on cy. x is smaller, like the retrograde symbol."""
-    size = cap / 0.70                      # Bricolage cap-height ~0.70 em
-    base = cy + cap / 2
-    r_d, r_w = glyph("R", size, x, base)
-    x_d, x_w = glyph("x", size * 0.78, x + r_w - size * 0.03, base + size * 0.06)
-    return (f'<path d="{r_d}" fill="{fg}"/><path d="{x_d}" fill="{xcol}"/>', r_w + x_w - size * 0.03)
+_mw, _md = (root / "assets/mercury-glyph.txt").read_text().split("\n")[:2]
+MERC_W, MERC_D = float(_mw), _md   # U+263F outlines from DejaVu Sans Bold (free license), 100 units tall
+
+def merc(x, cy, height, fill):
+    """The Mercury symbol with its left edge at x, centred on cy. Returns (svg, width)."""
+    k = height / 100
+    return (f'<path transform="translate({x:.2f} {cy - height / 2:.2f}) scale({k:.4f})" d="{MERC_D}" fill="{fill}" stroke="{fill}" stroke-width="5" stroke-linejoin="round"/>', MERC_W * k)
+
+def rx(x, cy, height, fill):
+    """The retrograde glyph with its left edge at x, vertically centred on cy. Returns (svg, width)."""
+    k = height / 100
+    return (f'<path transform="translate({x:.2f} {cy - height / 2:.2f}) scale({k:.4f})" d="{GLYPH_D}" fill="{fill}"/>',
+            GLYPH_W * k)
 
 def lockup(fg, xcol, uid="lk", h=100):
-    body, w = rx(114, 50, 58, fg, xcol)
-    W = 114 + w + 4
-    svg = (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W:.0f} {h}" role="img" aria-label="Mercury Rx">'
-           f'{planet(0, 0, 1, uid)}{body}</svg>')
-    return svg, W
+    """Mercury symbol in the ink color + retrograde glyph in orange."""
+    m, mw = merc(0, 50, 92, fg)
+    gx = mw + 16
+    g, gw = rx(gx, 50, 54, xcol)
+    W = gx + gw + 2
+    return (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W:.0f} {h}" role="img" aria-label="Mercury retrograde">{m}{g}</svg>'), W
 
-def icon_only(uid="ic"):
-    return f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="Mercury">{planet(0, 0, 1, uid)}</svg>'
+def icon_only(fill, uid="ic"):
+    m, mw = merc(0, 50, 100, fill)
+    return f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {mw:.0f} 100" role="img" aria-label="Mercury">{m}</svg>'
 
-def badge_icon(bg=None, uid="fv", pad=0):
-    """Planet with an orange Rx badge: favicon, touch icon, manifest icons. 64x64 box."""
-    d = 64
-    bgrect = f'<rect width="{d}" height="{d}" fill="{bg}"/>' if bg else ""
-    body, w = rx(0, 0, 11, "#FFFFFF", "#FFFFFF")
-    # centre the Rx inside the badge
-    body = body.replace("<path", "<path transform=\"translate(%.2f %.2f)\"" % (46 - w / 2, 46), 2)
-    s = (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {d} {d}">{bgrect}'
-         f'{planet(pad + 2, pad + 2, (d - 2*pad - 4) / 100, uid)}'
-         f'<circle cx="46" cy="46" r="16.5" fill="{YES}" stroke="{BG if bg else "#FFFFFF"}" stroke-width="2.5"/>'
-         f'{body}</svg>')
-    return s
+def glyph_svg(fill):
+    body, gw = rx(0, 50, 100, fill)
+    return f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {gw:.0f} 100" role="img" aria-label="Retrograde">{body}</svg>'
+
+def tile_icon(bg=None, pad=0, size=64):
+    """Orange tile with the white glyph: favicon, touch icon, manifest icons."""
+    t = size - 2 * pad
+    gh = t * 0.58
+    gw = GLYPH_W * gh / 100
+    body, _ = rx(size / 2 - gw / 2, size / 2, gh, "#FFFFFF")
+    if bg:
+        base = f'<rect width="{size}" height="{size}" fill="{bg}"/><rect x="{pad}" y="{pad}" width="{t}" height="{t}" rx="{t*0.22:.1f}" fill="{YES}"/>'
+    else:
+        base = f'<rect width="{size}" height="{size}" rx="{size*0.22:.1f}" fill="{YES}"/>'
+    return f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {size} {size}">{base}{body}</svg>'
 
 # Write standalone logo files
 light, LW = lockup(FG, YES, "a")
 dark, _ = lockup(D_FG, D_YES, "b")
 (root / "assets/logo.svg").write_text(light)
 (root / "assets/logo-dark.svg").write_text(dark)
-(root / "assets/logo-icon.svg").write_text(icon_only())
-fav = badge_icon(None, "f")
+(root / "assets/logo-icon.svg").write_text(icon_only(FG))
+(root / "assets/logo-icon-dark.svg").write_text(icon_only(D_FG))
+(root / "assets/logo-glyph.svg").write_text(glyph_svg(YES))
+(root / "assets/logo-glyph-dark.svg").write_text(glyph_svg(D_YES))
+fav = tile_icon()
 (root / "assets/favicon.svg").write_text(fav)
 (root / "assets/mark.svg").write_text(fav)
 
@@ -119,8 +122,9 @@ if src.exists():
             .replace("{{LOGO_THEMED}}", lk_var)
             .replace("{{LOGO_ON_DARK}}", lk_dark)
             .replace("{{LOGO_ON_LIGHT}}", lk_light)
-            .replace("{{LOGO_ICON}}", icon_only("g4"))
-            .replace("{{LOGO_BADGE}}", badge_icon(None, "g5")))
+            .replace("{{LOGO_ICON}}", icon_only("var(--fg)"))
+            .replace("{{LOGO_TILE}}", tile_icon())
+            .replace("{{LOGO_GLYPH}}", glyph_svg("var(--yes)")))
     (root / "style-guide.html").write_text(html)
 
 # ---- Render PNGs ----
@@ -134,7 +138,7 @@ with sync_playwright() as p:
         pg.screenshot(path=str(root / out))
     for size, out, bg in ((180, "assets/apple-touch-icon.png", BG), (192, "assets/icon-192.png", BG), (512, "assets/icon-512.png", BG)):
         pg = b.new_page(viewport={"width": size, "height": size})
-        svg = badge_icon(bg, "t", pad=6).replace("<svg ", f'<svg width="{size}" height="{size}" ')
+        svg = tile_icon(bg, pad=int(size*0.06), size=size).replace("<svg ", f'<svg width="{size}" height="{size}" ', 1)
         pg.set_content(f'<body style="margin:0">{svg}</body>')
         pg.screenshot(path=str(root / out))
     b.close()

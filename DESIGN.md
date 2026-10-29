@@ -7,13 +7,13 @@ Tokens: `tokens.css` (mirrors the CSS in `index.html`). Live reference: `style-g
 The answer is the page. One word, set huge, in the color of its state: burnt orange for YES, teal for NO. Everything else is quiet: one 460px column, soft panels, monospace for data.
 
 ## Logo
-A flat, emoji-style Mercury (grey, cratered planet) next to **Rx**, the astrological mark for retrograde. The R is the ink color; the x is the retrograde orange.
+The Mercury symbol ☿ (U+263F) in the ink color next to ℞, the astrological symbol for retrograde (U+211E), in retrograde orange.
 - `assets/logo.svg` lockup for light backgrounds, `assets/logo-dark.svg` for dark ones.
-- `assets/logo-icon.svg` planet only.
-- `assets/favicon.svg`, apple-touch and manifest icons: planet with an orange Rx badge, so it reads at small sizes.
-- The Rx is drawn from Bricolage Grotesque 800 outlines, so it renders the same everywhere.
-- Clear space: half the logo height on every side. Minimum: lockup 80px wide, planet 16px.
-- Don't recolor the planet, change the Rx typeface, stack the lockup or place it on low-contrast backgrounds.
+- `assets/logo-icon.svg` / `logo-icon-dark.svg` the ☿ alone. `assets/logo-glyph.svg` / `logo-glyph-dark.svg` the ℞ glyph alone.
+- `assets/favicon.svg`, apple-touch and manifest icons: white ℞ on an orange tile, so it reads at small sizes.
+- Both symbols are saved as vector outlines (℞ from Inter ExtraBold, SIL Open Font License, in `assets/rx-glyph.txt`; ☿ from DejaVu Sans Bold, thickened slightly, in `assets/mercury-glyph.txt`), so they render the same everywhere without a font.
+- Clear space: half the logo height on every side. Minimum: lockup 80px wide, ☿ 16px tall, bare ℞ 12px tall.
+- Don't recolor the glyphs, redraw or retype the glyph, stack the lockup or place it on low-contrast backgrounds.
 
 ## Color
 Light / dark. Use semantic tokens, never raw hex, in components.
