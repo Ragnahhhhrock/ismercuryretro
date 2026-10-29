@@ -25,7 +25,7 @@ Is Mercury retrograde right now?
 
 Yes. October 24 to November 13.
 
-I got tired of scrolling past 2,000 words to find out, so I built a site that answers in one word. Live countdown, dates, nothing else in the way.
+I got tired of scrolling past a wall of text to find out, so I built a site that answers in one word. Live countdown, dates, nothing else in the way.
 
 ismercuryretro.com
 
