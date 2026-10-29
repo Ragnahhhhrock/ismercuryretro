@@ -693,7 +693,15 @@ function route() {
     if (p === page) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
   });
   applyState();
-  window.scrollTo(0, 0);
+  toTop();
+}
+/* Browsers (iOS Safari especially) can restore an old scroll position after a hash change,
+   so jump to the top now and again once the new page has been laid out. */
+try { history.scrollRestoration = 'manual'; } catch (e) {}
+function toTop() {
+  const go = () => { window.scrollTo(0, 0); document.documentElement.scrollTop = 0; document.body.scrollTop = 0; };
+  go();
+  requestAnimationFrame(() => { go(); setTimeout(go, 60); });
 }
 window.addEventListener('hashchange', route);
 document.querySelectorAll('.tabs a').forEach(a => a.addEventListener('click', e => {
