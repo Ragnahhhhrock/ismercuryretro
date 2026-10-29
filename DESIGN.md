@@ -1,6 +1,7 @@
 # Design system: ismercuryretro.com
 
 The system the live site already uses, written down, plus the logo.
+Pages: `index.html` (Today) plus `dates/`, `science/`, `astrology/`, `tips/` (each a real page sharing `style.css` and `app.js`).
 Tokens: `tokens.css` (mirrors the CSS in `index.html`). Live reference: `style-guide.html`.
 
 ## Idea
