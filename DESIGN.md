@@ -42,7 +42,7 @@ Light / dark. Use semantic tokens, never raw hex, in components.
 Verdict card, panels with label + rows, retrograde period list with "now" tag, chips, buttons and date input, stat tiles, callout, bottom tab bar, chart styles. All are demonstrated in `style-guide.html`.
 
 ## Motion and access
-No decorative animation. 1px press on buttons (off for reduced motion). 2px focus outline in the state color. The answer is `role="status"` and always shows the word, never color alone.
+No decorative animation, except one data intro on Today at page load (`.intro` on `#app`, set in `app.js`, rules at the end of `style.css`): the answer rises in, numbers count up, the chart line draws, then the retrograde shading and markers fade in. It plays once, is off for reduced motion, and never replays when the date changes. 1px press on buttons (off for reduced motion). 2px focus outline in the state color. The answer is `role="status"` and always shows the word, never color alone.
 
 ## Voice
 Answer first, then facts. Plain verbs, no horoscope language. Controls say what they do.

@@ -128,7 +128,7 @@ function chartSVG(jd, st) {
              `<circle class="g-now-dot" cx="${f(X(jd))}" cy="${f(Y(rate(jd)))}" r="4.5"/>`;
   }
   const svg = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Mercury's apparent speed across the sky from ${fmt(a)} to ${fmt(b)}. Below zero means retrograde.">` +
-    grid + `<path class="g-retro-area" d="${rpath}Z"/><path class="g-line" d="${line}"/><path class="g-retro-line" d="${rpath}"/>` + marks + ticks + `</svg>`;
+    grid + `<path class="g-retro-area" d="${rpath}Z"/><path class="g-line" pathLength="1" d="${line}"/><path class="g-retro-line" pathLength="1" d="${rpath}"/>` + marks + ticks + `</svg>`;
   return { svg, inWin };
 }
 
@@ -312,13 +312,50 @@ on('date', 'change', e => {
 on('y-prev', 'click', () => { if (calYear > 1850) { calYear--; renderDates(); } });
 on('y-next', 'click', () => { if (calYear < 2048) { calYear++; renderDates(); } });
 
+/* ---------- Load animation (Today page, first render only) ---------- */
+const reduceMotion = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
+/* Counts every number in the element's text up from 0 to its final value, keeping the formatting. */
+function countUp(el, delay, dur) {
+  if (!el || !el.textContent) return;
+  const final = el.textContent;
+  const parts = final.split(/(\d+(?:\.\d+)?)/);   // odd indexes are the numbers
+  if (parts.length < 3) return;
+  const build = k => parts.map((p, i) => {
+    if (i % 2 === 0) return p;
+    const dec = p.includes('.') ? p.split('.')[1].length : 0;
+    const s = dec ? (parseFloat(p) * k).toFixed(dec) : String(Math.round(parseFloat(p) * k));
+    return (!dec && p.length > 1 && p[0] === '0') ? s.padStart(p.length, '0') : s;
+  }).join('');
+  el.textContent = build(0);
+  setTimeout(() => {
+    const t0 = performance.now();
+    (function step(now) {
+      const x = Math.min(1, (now - t0) / dur);
+      el.textContent = x < 1 ? build(1 - Math.pow(1 - x, 3)) : final;
+      if (x < 1) requestAnimationFrame(step);
+    })(t0);
+  }, delay);
+}
+function playIntro() {
+  if (reduceMotion) return;
+  const app = $('app');
+  document.querySelectorAll('#p-today .panel').forEach((el, i) => el.style.setProperty('--i', i));
+  document.querySelectorAll('#p-today dl.facts, #p-today ul.windows').forEach(list =>
+    list.querySelectorAll('.row, li').forEach((el, j) => el.style.setProperty('--j', j)));
+  app.classList.add('intro');
+  countUp($('sub'), 300, 1100);
+  if (!$('countdown').hidden) countUp($('cd-time'), 400, 1300);
+  countUp($('f-rate'), 700, 1000);
+  setTimeout(() => app.classList.remove('intro'), 3200);
+}
+
 /* ---------- Boot ---------- */
 /* Old single-page links like /#tips go to the matching page. */
 if (page === 'today' && PAGES.includes((location.hash || '').slice(1)) && location.hash !== '#today') {
   location.replace('/' + location.hash.slice(1) + '/');
 }
 const nowStatus = renderChips();
-if (page === 'today') render();
+if (page === 'today') { render(); playIntro(); }
 if (page === 'dates') renderDates();
 if (page === 'astrology') renderAstro(nowStatus);
 if (page === 'tips') renderTips();
