@@ -216,9 +216,9 @@ function renderDates() {
   const X = j => ml + (j - j0) / (j1 - j0) * (W - ml - mr);
   let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Retrograde periods across ${calYear}">` +
     `<rect class="g-track" x="${ml}" y="8" width="${W - ml - mr}" height="24" rx="4"/>`;
-  out.forEach(w => {
+  out.forEach((w, i) => {
     const x0 = X(Math.max(w.start, j0)), x1 = X(Math.min(w.end, j1));
-    s += `<rect class="g-band" x="${x0.toFixed(1)}" y="8" width="${Math.max(2, x1 - x0).toFixed(1)}" height="24"/>`;
+    s += `<rect class="g-band" style="--b:${i}" x="${x0.toFixed(1)}" y="8" width="${Math.max(2, x1 - x0).toFixed(1)}" height="24"/>`;
   });
   for (let m = 0; m < 12; m++) {
     const a = X(toJD(new Date(calYear, m, 1).getTime())), b = X(toJD(new Date(calYear, m + 1, 1).getTime()));
@@ -339,13 +339,19 @@ function countUp(el, delay, dur) {
 function playIntro() {
   if (reduceMotion) return;
   const app = $('app');
-  document.querySelectorAll('#p-today .panel').forEach((el, i) => el.style.setProperty('--i', i));
-  document.querySelectorAll('#p-today dl.facts, #p-today ul.windows').forEach(list =>
+  document.querySelectorAll('.page .panel').forEach((el, i) => el.style.setProperty('--i', i));
+  document.querySelectorAll('.page dl.facts, .page ul.windows').forEach(list =>
     list.querySelectorAll('.row, li').forEach((el, j) => el.style.setProperty('--j', j)));
+  document.querySelectorAll('.page .ph > *').forEach((el, k) => el.style.setProperty('--k', k));
   app.classList.add('intro');
-  countUp($('sub'), 300, 1100);
-  if (!$('countdown').hidden) countUp($('cd-time'), 400, 1300);
-  countUp($('f-rate'), 700, 1000);
+  if (page === 'today') {
+    countUp($('sub'), 300, 1100);
+    if (!$('countdown').hidden) countUp($('cd-time'), 400, 1300);
+    countUp($('f-rate'), 700, 1000);
+  } else if (page === 'dates') {
+    countUp($('cal-cap'), 500, 1100);
+    document.querySelectorAll('#cal-list .w-len').forEach(el => countUp(el, 700, 900));
+  }
   setTimeout(() => app.classList.remove('intro'), 3200);
 }
 
@@ -356,7 +362,7 @@ if (page === 'today' && PAGES.includes((location.hash || '').slice(1)) && locati
 }
 const nowStatus = renderChips();
 if (page === 'today') { render(); playIntro(); }
-if (page === 'dates') renderDates();
+if (page === 'dates') { renderDates(); playIntro(); }
 if (page === 'astrology') renderAstro(nowStatus);
 if (page === 'tips') renderTips();
 applyState();
