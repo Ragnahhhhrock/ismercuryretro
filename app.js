@@ -134,18 +134,18 @@ function chartSVG(jd, st) {
 
 /* ---------- Countdown to the end of the current retrograde ---------- */
 let cdEnd = null;          // JD the current retrograde ends, or null when not shown
+let cdLock = false;        // true while the load count-up owns the text
 function tickCountdown() {
   const box = $('countdown');
   if (!box) return;
   if (cdEnd === null) { box.hidden = true; return; }
-  const mins = Math.max(0, Math.floor((cdEnd - nowJD()) * 1440));
-  const d = Math.floor(mins / 1440), h = Math.floor(mins % 1440 / 60), m = mins % 60;
-  const text = (d ? d + 'd ' : '') + h + 'h ' + pad(m) + 'm';
+  const secs = Math.max(0, Math.floor((cdEnd - nowJD()) * 86400));
+  const d = Math.floor(secs / 86400), h = Math.floor(secs % 86400 / 3600), m = Math.floor(secs % 3600 / 60), sec = secs % 60;
   box.hidden = false;
-  if ($('cd-time').textContent !== text) $('cd-time').textContent = text;
-  if (mins === 0) setTimeout(render, 1000);   // retrograde just ended: refresh the answer
+  if (!cdLock) $('cd-time').innerHTML = (d ? d + 'd ' : '') + h + 'h ' + pad(m) + 'm <span class="cd-s">' + pad(sec) + 's</span>';
+  if (secs === 0) setTimeout(render, 1000);   // retrograde just ended: refresh the answer
 }
-setInterval(() => { tickCountdown(); }, 15000);
+setInterval(() => { tickCountdown(); }, 1000);
 
 function render() {
   const when = sel || new Date();
@@ -315,11 +315,11 @@ on('y-next', 'click', () => { if (calYear < 2048) { calYear++; renderDates(); } 
 /* ---------- Load animation (Today page, first render only) ---------- */
 const reduceMotion = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
 /* Counts every number in the element's text up from 0 to its final value, keeping the formatting. */
-function countUp(el, delay, dur) {
-  if (!el || !el.textContent) return;
+function countUp(el, delay, dur, done) {
+  if (!el || !el.textContent) { if (done) done(); return; }
   const final = el.textContent;
   const parts = final.split(/(\d+(?:\.\d+)?)/);   // odd indexes are the numbers
-  if (parts.length < 3) return;
+  if (parts.length < 3) { if (done) done(); return; }
   const build = k => parts.map((p, i) => {
     if (i % 2 === 0) return p;
     const dec = p.includes('.') ? p.split('.')[1].length : 0;
@@ -332,7 +332,7 @@ function countUp(el, delay, dur) {
     (function step(now) {
       const x = Math.min(1, (now - t0) / dur);
       el.textContent = x < 1 ? build(1 - Math.pow(1 - x, 3)) : final;
-      if (x < 1) requestAnimationFrame(step);
+      if (x < 1) requestAnimationFrame(step); else if (done) done();
     })(t0);
   }, delay);
 }
@@ -346,7 +346,7 @@ function playIntro() {
   app.classList.add('intro');
   if (page === 'today') {
     countUp($('sub'), 300, 1100);
-    if (!$('countdown').hidden) countUp($('cd-time'), 400, 1300);
+    if (!$('countdown').hidden) { cdLock = true; countUp($('cd-time'), 400, 1300, () => { cdLock = false; tickCountdown(); }); }
     countUp($('f-rate'), 700, 1000);
   } else if (page === 'dates') {
     countUp($('cal-cap'), 500, 1100);
