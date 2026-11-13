@@ -183,3 +183,16 @@ ul.windows li:first-child { border-top: 0; }
   .intro .g-band { transform-box: fill-box; transform-origin: left center; animation: mr-grow 0.7s ease-out both; animation-delay: calc(0.7s + var(--b, 0) * 0.12s); }
   .intro .g-tag, .intro .g-now, .intro .g-now-dot { animation: mr-fade 0.5s 1.6s ease-out both; }
 }
+
+/* Solar system animation */
+.orb-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 8px; }
+.orb-bar .cap { margin: 0; font-family: var(--mono); font-variant-numeric: tabular-nums; color: var(--fg); }
+.orb-bar button { min-width: 72px; }
+.o-orbit { fill: none; }
+.o-sun { fill: var(--fg); }
+.o-dot { fill: var(--muted); }
+.o-earth { fill: var(--fg); }
+.o-merc { fill: var(--state); stroke: var(--panel); stroke-width: 1.5; }
+.o-label { fill: var(--muted); font: 400 9px var(--mono); }
+.o-merc-t { fill: var(--state); font-weight: 700; font-size: 10px; }
+.o-trail { fill: none; stroke: var(--state); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; opacity: 0.55; }

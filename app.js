@@ -166,6 +166,7 @@ function render() {
 
   const c = chartSVG(jd, st);
   $('chart').innerHTML = c.svg;
+  startOrrery(jd);
   $('chart-cap').textContent = (c.inWin ? 'The dot is the date you are checking. ' : 'The date you are checking is outside this window. ') +
     'Shaded area is retrograde, from Rx to D.';
 
@@ -354,6 +355,79 @@ function playIntro() {
   }
   setTimeout(() => app.classList.remove('intro'), 3200);
 }
+
+/* ---------- Solar system animation (Today page) ---------- */
+/* Orbital elements for Venus to Neptune (JPL approximate elements, 1800-2050), same format as MERC and EARTH above. */
+const PLANETS = [
+  { n:'Mercury', r:24,  el:MERC },
+  { n:'Venus',   r:40,  el:{ a:[0.72333566,0.00000390], e:[0.00677672,-0.00004107], I:[3.39467605,-0.00078890], L:[181.97909950,58517.81538729], w:[131.60246718,0.00268329], O:[76.67984255,-0.27769418] } },
+  { n:'Earth',   r:56,  el:EARTH },
+  { n:'Mars',    r:74,  el:{ a:[1.52371034,0.00001847], e:[0.09339410,0.00007882], I:[1.84969142,-0.00813131], L:[-4.55343205,19140.30268499], w:[-23.94362959,0.44441088], O:[49.55953891,-0.29257343] } },
+  { n:'Jupiter', r:100, el:{ a:[5.20288700,-0.00011607], e:[0.04838624,-0.00013253], I:[1.30439695,-0.00183714], L:[34.39644051,3034.74612775], w:[14.72847983,0.21252668], O:[100.47390909,0.20469106] } },
+  { n:'Saturn',  r:122, el:{ a:[9.53667594,-0.00125060], e:[0.05386179,-0.00050991], I:[2.48599187,0.00193609], L:[49.95424423,1222.49362201], w:[92.59887831,-0.41897216], O:[113.66242448,-0.28867794] } },
+  { n:'Uranus',  r:142, el:{ a:[19.18916464,-0.00196176], e:[0.04725744,-0.00004397], I:[0.77263783,-0.00242939], L:[313.23810451,428.48202785], w:[170.95427630,0.40805281], O:[74.01692503,0.04240589] } },
+  { n:'Neptune', r:160, el:{ a:[30.06992276,0.00026291], e:[0.00859048,0.00005105], I:[1.77004347,0.00035372], L:[-55.12002969,218.45945325], w:[44.96476227,-0.32241464], O:[131.78422574,-0.00508664] } }
+];
+const ORB = { c: 180, speed: 12, jd: 0, last: 0, playing: false, raf: 0, built: false, retro: null };
+function orbPos(p, jd) {
+  const h = helio(p.el, (jd - 2451545) / 36525), ang = Math.atan2(h[1], h[0]);
+  return [ORB.c + p.r * Math.cos(ang), ORB.c - p.r * Math.sin(ang)];
+}
+function buildOrrery() {
+  const el = $('orrery');
+  if (!el) return;
+  const c = ORB.c;
+  let s = `<svg viewBox="0 0 360 360" role="img" aria-label="Animated top-down view of the planets orbiting the Sun, with Mercury highlighted." style="overflow:visible">`;
+  PLANETS.forEach(p => { s += `<circle class="g-grid o-orbit" cx="${c}" cy="${c}" r="${p.r}"/>`; });
+  s += `<polyline class="o-trail" id="o-trail" points=""/><line class="g-now" id="o-sight" x1="0" y1="0" x2="0" y2="0"/>`;
+  s += `<circle class="o-sun" cx="${c}" cy="${c}" r="7"/>`;
+  PLANETS.forEach((p, i) => {
+    const m = i === 0, e = i === 2;
+    s += `<circle class="o-dot${m ? ' o-merc' : e ? ' o-earth' : ''}" id="o-p${i}" r="${m ? 5.5 : e ? 4.5 : i < 4 ? 3.5 : 4.5}"/>` +
+         `<text class="o-label${m ? ' o-merc-t' : ''}" id="o-t${i}" dy="3.5">${p.n}</text>`;
+  });
+  el.innerHTML = s + '</svg>';
+  ORB.built = true;
+}
+function drawOrrery() {
+  if (!ORB.built) return;
+  const jd = ORB.jd, pos = PLANETS.map(p => orbPos(p, jd));
+  pos.forEach((q, i) => {
+    $('o-p' + i).setAttribute('cx', q[0].toFixed(1)); $('o-p' + i).setAttribute('cy', q[1].toFixed(1));
+    const t = $('o-t' + i), left = q[0] > 250, gap = i === 0 ? 9 : 7;
+    t.setAttribute('x', (q[0] + (left ? -gap : gap)).toFixed(1)); t.setAttribute('y', q[1].toFixed(1)); t.setAttribute('text-anchor', left ? 'end' : 'start');
+  });
+  const pts = [];
+  for (let k = 44; k >= 0; k--) { const q = orbPos(PLANETS[0], jd - k * 2); pts.push(q[0].toFixed(1) + ',' + q[1].toFixed(1)); }
+  $('o-trail').setAttribute('points', pts.join(' '));
+  const sight = $('o-sight');
+  sight.setAttribute('x1', pos[2][0].toFixed(1)); sight.setAttribute('y1', pos[2][1].toFixed(1));
+  sight.setAttribute('x2', pos[0][0].toFixed(1)); sight.setAttribute('y2', pos[0][1].toFixed(1));
+  const retro = rate(jd) < 0;
+  $('orb-cap').textContent = fmt(jd, true) + ' · Mercury ' + (retro ? 'retrograde' : 'direct');
+  $('orb-cap').style.color = retro ? 'var(--yes)' : '';
+}
+function orbFrame(now) {
+  if (!ORB.playing) return;
+  ORB.jd += Math.min(0.1, (now - ORB.last) / 1000) * ORB.speed;
+  ORB.last = now;
+  drawOrrery();
+  ORB.raf = requestAnimationFrame(orbFrame);
+}
+function orbPlay(on) {
+  ORB.playing = on;
+  cancelAnimationFrame(ORB.raf);
+  const b = $('orb-toggle');
+  if (b) { b.textContent = on ? 'Pause' : 'Play'; b.setAttribute('aria-pressed', on ? 'true' : 'false'); }
+  if (on) { ORB.last = performance.now(); ORB.raf = requestAnimationFrame(orbFrame); }
+}
+function startOrrery(jd) {
+  if (!$('orrery')) return;
+  if (!ORB.built) { buildOrrery(); orbPlay(!reduceMotion); }
+  ORB.jd = jd;
+  drawOrrery();
+}
+on('orb-toggle', 'click', () => orbPlay(!ORB.playing));
 
 /* ---------- Boot ---------- */
 /* Old single-page links like /#tips go to the matching page. */
