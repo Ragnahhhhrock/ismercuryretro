@@ -166,7 +166,7 @@ function render() {
 
   const c = chartSVG(jd, st);
   $('chart').innerHTML = c.svg;
-  startOrrery(jd);
+  startOrrery(st);
   $('chart-cap').textContent = (c.inWin ? 'The dot is the date you are checking. ' : 'The date you are checking is outside this window. ') +
     'Shaded area is retrograde, from Rx to D.';
 
@@ -356,61 +356,78 @@ function playIntro() {
   setTimeout(() => app.classList.remove('intro'), 3200);
 }
 
-/* ---------- Solar system animation (Today page) ---------- */
-/* Orbital elements for Venus to Neptune (JPL approximate elements, 1800-2050), same format as MERC and EARTH above. */
-const PLANETS = [
-  { n:'Mercury', r:24,  el:MERC },
-  { n:'Venus',   r:40,  el:{ a:[0.72333566,0.00000390], e:[0.00677672,-0.00004107], I:[3.39467605,-0.00078890], L:[181.97909950,58517.81538729], w:[131.60246718,0.00268329], O:[76.67984255,-0.27769418] } },
-  { n:'Earth',   r:56,  el:EARTH },
-  { n:'Mars',    r:74,  el:{ a:[1.52371034,0.00001847], e:[0.09339410,0.00007882], I:[1.84969142,-0.00813131], L:[-4.55343205,19140.30268499], w:[-23.94362959,0.44441088], O:[49.55953891,-0.29257343] } },
-  { n:'Jupiter', r:100, el:{ a:[5.20288700,-0.00011607], e:[0.04838624,-0.00013253], I:[1.30439695,-0.00183714], L:[34.39644051,3034.74612775], w:[14.72847983,0.21252668], O:[100.47390909,0.20469106] } },
-  { n:'Saturn',  r:122, el:{ a:[9.53667594,-0.00125060], e:[0.05386179,-0.00050991], I:[2.48599187,0.00193609], L:[49.95424423,1222.49362201], w:[92.59887831,-0.41897216], O:[113.66242448,-0.28867794] } },
-  { n:'Uranus',  r:142, el:{ a:[19.18916464,-0.00196176], e:[0.04725744,-0.00004397], I:[0.77263783,-0.00242939], L:[313.23810451,428.48202785], w:[170.95427630,0.40805281], O:[74.01692503,0.04240589] } },
-  { n:'Neptune', r:160, el:{ a:[30.06992276,0.00026291], e:[0.00859048,0.00005105], I:[1.77004347,0.00035372], L:[-55.12002969,218.45945325], w:[44.96476227,-0.32241464], O:[131.78422574,-0.00508664] } }
-];
-const ORB = { c: 180, speed: 12, jd: 0, last: 0, playing: false, raf: 0, built: false, retro: null };
-function orbPos(p, jd) {
-  const h = helio(p.el, (jd - 2451545) / 36525), ang = Math.atan2(h[1], h[0]);
-  return [ORB.c + p.r * Math.cos(ang), ORB.c - p.r * Math.sin(ang)];
-}
+/* ---------- Retrograde demo: Sun, Mercury, Earth (Today page) ---------- */
+const OR = { cx: 180, cy: 112, k: 100, sky: { W: 360, H: 104, deg: 60, ppd: 340 / 60, y0: 22, dy: 1.2, days: 44 } };
+const ORB = { key: null, from: 0, to: 0, jd: 0, last: 0, playing: false, raf: 0, built: false, wc: 0, speed: 5, retro: null };
+const orPt = (p, jd) => { const h = helio(p, (jd - 2451545) / 36525); return [OR.cx + OR.k * h[0], OR.cy - OR.k * h[1]]; };
+const orPath = (p, jd0, span, n) => {
+  let d = '';
+  for (let i = 0; i <= n; i++) { const q = orPt(p, jd0 + span * i / n); d += (i ? 'L' : 'M') + q[0].toFixed(1) + ' ' + q[1].toFixed(1); }
+  return d + 'Z';
+};
 function buildOrrery() {
-  const el = $('orrery');
-  if (!el) return;
-  const c = ORB.c;
-  let s = `<svg viewBox="0 0 360 360" role="img" aria-label="Animated top-down view of the planets orbiting the Sun, with Mercury highlighted." style="overflow:visible">`;
-  PLANETS.forEach(p => { s += `<circle class="g-grid o-orbit" cx="${c}" cy="${c}" r="${p.r}"/>`; });
-  s += `<polyline class="o-trail" id="o-trail" points=""/><line class="g-now" id="o-sight" x1="0" y1="0" x2="0" y2="0"/>`;
-  s += `<circle class="o-sun" cx="${c}" cy="${c}" r="7"/>`;
-  PLANETS.forEach((p, i) => {
-    const m = i === 0, e = i === 2;
-    s += `<circle class="o-dot${m ? ' o-merc' : e ? ' o-earth' : ''}" id="o-p${i}" r="${m ? 5.5 : e ? 4.5 : i < 4 ? 3.5 : 4.5}"/>` +
-         `<text class="o-label${m ? ' o-merc-t' : ''}" id="o-t${i}" dy="3.5">${p.n}</text>`;
-  });
-  el.innerHTML = s + '</svg>';
+  if (!$('orrery')) return;
+  const c = [OR.cx, OR.cy];
+  $('orrery').innerHTML = `<svg viewBox="0 0 360 224" role="img" aria-label="Top-down view of the Sun, Mercury and Earth. A dashed line of sight runs from Earth through Mercury.">` +
+    `<path class="g-grid o-orbit" d="${orPath(EARTH, ORB.jd, 365.25, 120)}"/><path class="o-orbit o-orbit-m" d="${orPath(MERC, ORB.jd, 87.97, 60)}"/>` +
+    `<line class="g-now" id="o-sight" x1="0" y1="0" x2="0" y2="0"/><text class="o-label" id="o-stars" text-anchor="middle">to the stars</text>` +
+    `<circle class="o-sun" cx="${c[0]}" cy="${c[1]}" r="8"/><text class="o-label" x="${c[0]}" y="${c[1] + 22}" text-anchor="middle">Sun</text>` +
+    `<circle class="o-earth" id="o-e" r="5.5"/><text class="o-label o-earth-t" id="o-et" dy="3.5">Earth</text>` +
+    `<circle class="o-merc" id="o-m" r="4.5"/><text class="o-label o-merc-t" id="o-mt" dy="3.5">Mercury</text></svg>`;
+  const S = OR.sky;
+  let ax = '';
+  $('sky').innerHTML = `<svg viewBox="0 0 ${S.W} ${S.H}" role="img" aria-label="Where Mercury appears against the stars as seen from Earth. Time runs downward, so the trail shows its recent path, including the backwards stretch.">` +
+    `<g id="s-ticks"></g><path class="s-trail" id="s-trail" d=""/><path class="s-trail s-back" id="s-back" d=""/>` +
+    `<circle class="o-merc" id="s-dot" r="5"/></svg>`;
   ORB.built = true;
+}
+const skyX = d => 10 + OR.sky.ppd * (wrap180(d - ORB.wc) + OR.sky.deg / 2);
+function drawSky(jd) {
+  const S = OR.sky, lon = geoLon(jd);
+  let d = wrap180(lon - ORB.wc);
+  if (Math.abs(d) > S.deg * 0.3) ORB.wc += d * Math.min(1, ORB.dt * 2.5);   // slide the window along
+  const lo = Math.ceil((ORB.wc - S.deg / 2) / 5) * 5;
+  let tk = '';
+  for (let L = lo; L <= ORB.wc + S.deg / 2; L += 5) {
+    const x = skyX(L).toFixed(1), q = ((L % 360) + 360) % 360, m = q % 30;
+    tk += `<line class="g-grid" x1="${x}" x2="${x}" y1="${S.H - 22}" y2="${S.H - (m % 10 === 0 ? 14 : 18)}"/>`;
+    if (m % 10 === 0) tk += `<text class="g-text" x="${x}" y="${S.H - 3}" text-anchor="middle">${m === 0 ? SIGNS[q / 30] : m + '°'}</text>`;
+  }
+  $('s-ticks').innerHTML = tk + `<line class="g-grid" x1="10" x2="${S.W - 10}" y1="${S.H - 22}" y2="${S.H - 22}"/>`;
+  let all = '', back = '', inBack = false;
+  for (let k = S.days; k >= 0; k--) {
+    const t = jd - k, p = skyX(geoLon(t)).toFixed(1) + ' ' + (S.y0 + k * S.dy).toFixed(1), r = rate(t) < 0;
+    all += (k === S.days ? 'M' : 'L') + p;
+    if (r) { back += (inBack ? 'L' : 'M') + p; inBack = true; } else inBack = false;
+  }
+  $('s-trail').setAttribute('d', all); $('s-back').setAttribute('d', back);
+  $('s-dot').setAttribute('cx', skyX(lon).toFixed(1)); $('s-dot').setAttribute('cy', S.y0);
 }
 function drawOrrery() {
   if (!ORB.built) return;
-  const jd = ORB.jd, pos = PLANETS.map(p => orbPos(p, jd));
-  pos.forEach((q, i) => {
-    $('o-p' + i).setAttribute('cx', q[0].toFixed(1)); $('o-p' + i).setAttribute('cy', q[1].toFixed(1));
-    const t = $('o-t' + i), left = q[0] > 250, gap = i === 0 ? 9 : 7;
-    t.setAttribute('x', (q[0] + (left ? -gap : gap)).toFixed(1)); t.setAttribute('y', q[1].toFixed(1)); t.setAttribute('text-anchor', left ? 'end' : 'start');
-  });
-  const pts = [];
-  for (let k = 44; k >= 0; k--) { const q = orbPos(PLANETS[0], jd - k * 2); pts.push(q[0].toFixed(1) + ',' + q[1].toFixed(1)); }
-  $('o-trail').setAttribute('points', pts.join(' '));
-  const sight = $('o-sight');
-  sight.setAttribute('x1', pos[2][0].toFixed(1)); sight.setAttribute('y1', pos[2][1].toFixed(1));
-  sight.setAttribute('x2', pos[0][0].toFixed(1)); sight.setAttribute('y2', pos[0][1].toFixed(1));
+  const jd = ORB.jd, m = orPt(MERC, jd), e = orPt(EARTH, jd);
+  $('o-e').setAttribute('cx', e[0].toFixed(1)); $('o-e').setAttribute('cy', e[1].toFixed(1));
+  $('o-m').setAttribute('cx', m[0].toFixed(1)); $('o-m').setAttribute('cy', m[1].toFixed(1));
+  const side = (q, g) => ({ x: (q[0] + (q[0] > 250 ? -g : g)).toFixed(1), a: q[0] > 250 ? 'end' : 'start', y: q[1].toFixed(1) });
+  [['o-et', e, 9], ['o-mt', m, 8]].forEach(([id, q, g]) => { const s = side(q, g), el = $(id); el.setAttribute('x', s.x); el.setAttribute('y', s.y); el.setAttribute('text-anchor', s.a); });
+  let dx = m[0] - e[0], dy = m[1] - e[1]; const len = Math.hypot(dx, dy) || 1; dx /= len; dy /= len;
+  let L = 400;                                           // stop the line at the edge of the picture
+  if (dx > 0) L = Math.min(L, (352 - e[0]) / dx); else if (dx < 0) L = Math.min(L, (8 - e[0]) / dx);
+  if (dy > 0) L = Math.min(L, (216 - e[1]) / dy); else if (dy < 0) L = Math.min(L, (14 - e[1]) / dy);
+  const sl = $('o-sight'), ex = e[0] + dx * L, ey = e[1] + dy * L;
+  sl.setAttribute('x1', e[0].toFixed(1)); sl.setAttribute('y1', e[1].toFixed(1)); sl.setAttribute('x2', ex.toFixed(1)); sl.setAttribute('y2', ey.toFixed(1));
+  const st = $('o-stars'); st.setAttribute('x', Math.min(320, Math.max(40, ex - dx * 10)).toFixed(1)); st.setAttribute('y', (ey - dy * 10 + (dy > 0 ? 0 : 10)).toFixed(1));
+  drawSky(jd);
   const retro = rate(jd) < 0;
-  $('orb-cap').textContent = fmt(jd, true) + ' · Mercury ' + (retro ? 'retrograde' : 'direct');
+  $('orb-cap').textContent = fmt(jd, true) + ' · ' + (retro ? 'Appears to move backwards' : 'Moving forward');
   $('orb-cap').style.color = retro ? 'var(--yes)' : '';
+  $('orrery').dataset.retro = retro ? '1' : '0';
 }
 function orbFrame(now) {
   if (!ORB.playing) return;
-  ORB.jd += Math.min(0.1, (now - ORB.last) / 1000) * ORB.speed;
-  ORB.last = now;
+  ORB.dt = Math.min(0.1, (now - ORB.last) / 1000); ORB.last = now;
+  ORB.jd += ORB.dt * ORB.speed;
+  if (ORB.jd > ORB.to) ORB.jd = ORB.from;               // loop the retrograde
   drawOrrery();
   ORB.raf = requestAnimationFrame(orbFrame);
 }
@@ -421,11 +438,18 @@ function orbPlay(on) {
   if (b) { b.textContent = on ? 'Pause' : 'Play'; b.setAttribute('aria-pressed', on ? 'true' : 'false'); }
   if (on) { ORB.last = performance.now(); ORB.raf = requestAnimationFrame(orbFrame); }
 }
-function startOrrery(jd) {
+/* Plays the retrograde nearest the date being checked: from 20 days before it starts to 15 days after it ends, on a loop. */
+function startOrrery(st) {
   if (!$('orrery')) return;
-  if (!ORB.built) { buildOrrery(); orbPlay(!reduceMotion); }
-  ORB.jd = jd;
+  const key = Math.round(st.start);
+  if (ORB.key === key) return;
+  ORB.key = key; ORB.dt = 0.016;
+  ORB.from = st.start - 20; ORB.to = st.end + 15;
+  ORB.jd = reduceMotion ? (st.start + st.end) / 2 : ORB.from;
+  ORB.wc = geoLon(ORB.jd);
+  buildOrrery();
   drawOrrery();
+  if (!ORB.playing && !reduceMotion && !ORB.started) { ORB.started = true; orbPlay(true); }
 }
 on('orb-toggle', 'click', () => orbPlay(!ORB.playing));
 
